@@ -19,9 +19,19 @@ model Images {
   id          Int       @id @default(autoincrement())
   resource_id Int
   resource    Resources @relation(fields: [resource_id], references: [id])
-  latitude    Int
-  longitude   Int
+  latitude    Float
+  longitude   Float
   timestamp   DateTime
   file_path   String?
   file_name   String
+}
+
+model Users {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  password   String
+  role       String   @default("user")
+  created_at DateTime @db.Date
+  status     String   @default("active")
 }

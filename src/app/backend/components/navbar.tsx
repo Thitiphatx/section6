@@ -2,9 +2,12 @@
 
 export default function Navbar() {
   return (
-    <ul>
-        <li><a href="/backend/import">import</a></li>
-        <li><a href="/backend/resources">resources</a></li>
-    </ul>
+    <div>
+      Backend
+      <ul>
+          <li><a href="/backend/import" className="text-green-400">import</a></li>
+          <li><a href="/backend/resources" className="text-green-400">resources</a></li>
+      </ul>
+    </div>
   )
 }

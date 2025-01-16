@@ -6,10 +6,10 @@ export default async function Page() {
         <div className="flex flex-col gap-1">
             {resources_list && (
                 resources_list.map((resource)=> (
-                    <div key={resource.id} className="p-2 bg-slate-800">
+                    <a key={resource.id} className="p-2 bg-slate-800" href={`/backend/resources/${resource.id}`}>
                         <p>name: {resource.name}</p>
                         <p>{resource.created_at.toDateString()}</p>
-                    </div>
+                    </a>
                 ))
             )}
         </div>
