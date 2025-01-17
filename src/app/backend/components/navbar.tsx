@@ -2,7 +2,7 @@
 
 export default function Navbar() {
   return (
-    <div>
+    <div className="bg-zinc-800">
       Backend
       <ul>
           <li><a href="/backend/import" className="text-green-400">import</a></li>

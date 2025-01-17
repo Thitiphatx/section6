@@ -1,6 +1,6 @@
 "use client"
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function SignInForm() {
     const { data: session } = useSession();
@@ -22,6 +22,7 @@ export default function SignInForm() {
                 <input name="password" type="password" placeholder="password" />
                 <button>signin</button>
             </form>
+            <button onClick={()=> signOut()}>signout</button>
             <a href="/signup">signup</a>
         </div>
     )
