@@ -19,8 +19,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${comfortaa.className}  antialiased bg-black text-white`} >
+		<html lang="en" data-theme="dark">
+			<body className={`${comfortaa.className}  antialiased bg-base-300 min-h-screen`} >
 				<SessionProvider>
 					<header><Navbar /></header>
 					<main>
