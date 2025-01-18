@@ -1,10 +1,14 @@
 "use client"
 
-import { useActionState } from "react"
-import { signup } from "../actions"
+import { useActionState, useEffect } from "react"
+import { SignUpAction } from "../actions"
 
 export default function SignUpForm() {
-    const [state, action, pending] = useActionState(signup, undefined)
+    const [state, action, pending] = useActionState(SignUpAction, undefined)
+
+    useEffect(()=> {
+        console.log(state);
+    }, [state])
 
     return (
         <div className="mx-auto max-w-lg bg-base-100 p-5 rounded-lg mt-5">

@@ -1,10 +1,36 @@
 "use client"
 
-import { useActionState } from "react";
-import { signin } from "../actions";
+import { useActionState, useEffect } from "react";
+import { SignInAction } from "../actions";
+import { signIn } from "next-auth/react";
+
+const initialState = {
+    errors: null,
+    data: {
+        email: "",
+        password: ""
+    },
+    message: null,
+    success: false
+}
 
 export default function SignInForm() {
-    const [state, action, pending] = useActionState(signin, undefined)
+    const [state, action, pending] = useActionState(SignInAction, initialState)
+
+    useEffect(()=> {
+        const login = async()=> {
+            console.log(state)
+            await signIn("credentials",{
+                email: state.data.email,
+                password: state.data.password,
+                redirect: true
+            });
+        }
+
+        if (state.success) {
+            login();
+        }
+    }, [state])
 
     return (
         <div className="mx-auto max-w-lg bg-base-100 p-5 rounded-lg mt-5">
@@ -14,7 +40,7 @@ export default function SignInForm() {
                     <div className="label">
                         <span className="label-text">Email</span>
                     </div>
-                    <input name="email" type="email" placeholder="Type here" className="input input-bordered w-full" />
+                    <input name="email" type="email" placeholder="Type here" defaultValue={state.data.email} className="input input-bordered w-full" />
                     <div className="label">
                         {state?.errors?.email && <span className="label-text-alt text-error">{state.errors.email}</span>}
                     </div>
@@ -23,7 +49,7 @@ export default function SignInForm() {
                     <div className="label">
                         <span className="label-text">Password</span>
                     </div>
-                    <input name="password" type="password" placeholder="Type here" className="input input-bordered w-full" />
+                    <input name="password" type="password" placeholder="Type here" defaultValue={state.data.password} className="input input-bordered w-full" />
                     <div className="label">
                         {state?.errors?.password && <span className="label-text-alt text-error">{state.errors.password}</span>}
                     </div>

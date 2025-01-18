@@ -37,11 +37,10 @@ export const authConfig: NextAuthConfig = {
 
                 const user = await prisma.users.findFirst({ where: { email } });
                 if (!user) return null;
-
                 // const matched = await compare(password, user.password as string);
                 const matched = (password == user.password as string);
                 if (!matched) return null;
-
+                
                 return {
                     id: user.id,
                     email: user.email,
