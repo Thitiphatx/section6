@@ -24,6 +24,8 @@ model Images {
   timestamp   DateTime
   file_path   String?
   file_name   String
+
+  @@unique([resource_id, file_name]) // Composite unique constraint
 }
 
 model Users {

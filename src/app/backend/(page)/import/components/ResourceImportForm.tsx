@@ -41,11 +41,28 @@ export default function ResourceImportForm() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="flex flex-col w-64">
+		<form onSubmit={handleSubmit} className="flex flex-col max-w-lg bg-base-100 p-5 rounded-lg">
 			<label>import resource</label>
-			<input name="resource_name" type="text" placeholder="resource name" className="text-black"/>
-			<input name="resource" type="file" accept=".txt" />
-			<button className="bg-zinc-800 p-1">import</button>
+			<label className="form-control w-full max-w-xs">
+				<div className="label">
+					<span className="label-text">Resource Name</span>
+				</div>
+				<input name="resource_name" type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+				<div className="label">
+					<span className="label-text-alt">Bottom Left label</span>
+				</div>
+			</label>
+
+			<label className="form-control w-full max-w-xs">
+				<div className="label">
+					<span className="label-text">Resource Name</span>
+				</div>
+				<input name="resource" type="file" accept=".txt" className="file-input file-input-bordered w-full max-w-xs" />
+				<div className="label">
+					<span className="label-text-alt">Bottom Left label</span>
+				</div>
+			</label>
+			<button className="btn btn-block">import</button>
 		</form>
 	)
 }
