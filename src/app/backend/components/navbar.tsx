@@ -7,7 +7,7 @@ export default function Navbar() {
       <ul>
           <li><a href="/backend/import" className="text-green-400">import</a></li>
           <li><a href="/backend/resources" className="text-green-400">resources</a></li>
-          <li><a href="/backend/predictions" className="text-green-400">predictions</a></li>
+          <li><a href="/backend/segmentation" className="text-green-400">segmentation</a></li>
       </ul>
     </div>
   )

@@ -1,8 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
 import NextAuth, { DefaultSession, NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { compare } from "bcrypt"
 import { JWT } from "next-auth/jwt";
+import { compare } from "bcryptjs";
 
 declare module "next-auth" {
     interface User {
@@ -37,8 +37,8 @@ export const authConfig: NextAuthConfig = {
 
                 const user = await prisma.users.findFirst({ where: { email } });
                 if (!user) return null;
-                // const matched = await compare(password, user.password as string);
-                const matched = (password == user.password as string);
+                const matched = await compare(password, user.password as string);
+                // const matched = (password == user.password as string);
                 if (!matched) return null;
                 
                 return {

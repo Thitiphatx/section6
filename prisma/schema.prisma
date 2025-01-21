@@ -7,6 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Users {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  password   String
+  role       String   @default("user")
+  created_at DateTime @db.Date
+  status     String   @default("active")
+}
+
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Resources {
   id         Int      @id @default(autoincrement())
@@ -16,24 +26,24 @@ model Resources {
 }
 
 model Images {
-  id          Int       @id @default(autoincrement())
-  resource_id Int
-  resource    Resources @relation(fields: [resource_id], references: [id])
-  latitude    Float
-  longitude   Float
-  timestamp   DateTime
-  file_path   String?
-  file_name   String
+  id                     Int                   @id @default(autoincrement())
+  resource_id            Int
+  resource               Resources             @relation(fields: [resource_id], references: [id])
+  segmentation           Segmentation_Results? @relation(fields: [segmentation_ResultsId], references: [id])
+  latitude               Float
+  longitude              Float
+  timestamp              DateTime
+  file_path              String?
+  file_name              String
+  segmentation_ResultsId Int?                  @unique // Ensures one-to-one relationship
 
   @@unique([resource_id, file_name]) // Composite unique constraint
 }
 
-model Users {
-  id         String   @id @default(uuid())
-  name       String
-  email      String
-  password   String
-  role       String   @default("user")
-  created_at DateTime @db.Date
-  status     String   @default("active")
+model Segmentation_Results {
+  id          Int      @id @default(autoincrement())
+  result_path String
+  classes     Json
+  created_at  DateTime @db.Date
+  Images      Images?
 }

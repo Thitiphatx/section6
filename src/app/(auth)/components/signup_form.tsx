@@ -6,10 +6,6 @@ import { SignUpAction } from "../actions"
 export default function SignUpForm() {
     const [state, action, pending] = useActionState(SignUpAction, undefined)
 
-    useEffect(()=> {
-        console.log(state);
-    }, [state])
-
     return (
         <div className="mx-auto max-w-lg bg-base-100 p-5 rounded-lg mt-5">
             <h1 className="text-3xl font-bold text-center">SignUp</h1>
