@@ -1,14 +1,11 @@
 "use client"
 
 export default function Navbar() {
-  return (
-    <div className="bg-zinc-800">
-      Backend
-      <ul>
-          <li><a href="/backend/import" className="text-green-400">import</a></li>
-          <li><a href="/backend/resources" className="text-green-400">resources</a></li>
-          <li><a href="/backend/predictions" className="text-green-400">predictions</a></li>
-      </ul>
-    </div>
-  )
+	return (
+		<ul className="menu menu-lg bg-base-100 rounded-box">
+			<li><a href="/backend/import">import</a></li>
+			<li><a href="/backend/resources">resources</a></li>
+			<li><a href="/backend/predictions">predictions</a></li>
+		</ul>
+	)
 }
