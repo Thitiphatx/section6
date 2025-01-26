@@ -3,7 +3,7 @@
 import { signIn } from "next-auth/react"
 import { SigninFormSchema, SignupFormSchema } from "./schema"
 import { prisma } from "../lib/prisma"
-import { hashSync } from "bcrypt"
+import { hashSync } from "bcryptjs"
 
 export async function SignUpAction(prevState: any, formData: FormData) {
     const data = {

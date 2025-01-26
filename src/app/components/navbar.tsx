@@ -4,6 +4,7 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
     const { data: session } = useSession();
+    
     const PAGES = [
 
     ]
@@ -62,7 +63,7 @@ export default function Navbar() {
                                 </a>
                             </li>
                             <li><a>Settings</a></li>
-                            <li><button onClick={() => signOut()}>Logout</button></li>
+                            <li><button className="" onClick={() => signOut()}>Logout</button></li>
                         </ul>
                     </div>
                 )

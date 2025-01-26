@@ -1,3 +1,4 @@
+import ResourceControlPanel from "@/app/backend/components/resource_control_panel";
 import ResourceImageTable from "@/app/backend/components/resource_image_table";
 import ResourceImageUpload from "@/app/backend/components/resource_image_upload";
 import { prisma } from "@/app/lib/prisma"
@@ -25,6 +26,7 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
 				(
 					<>
 						<ResourceImageUpload CurrentList={data?.Images} id={data?.id}/>
+						<ResourceControlPanel />
 						<ResourceImageTable ImageList={data?.Images}/>
 					</>
 					

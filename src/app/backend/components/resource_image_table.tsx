@@ -4,41 +4,47 @@ import { Images } from "@prisma/client"
 
 export default function ResourceImageTable({ ImageList }: { ImageList: Images[] }) {
     return (
-        <div className="mt-5">
-            <div className="grid grid-cols-6">
-                <div>status</div>
-                <div>file_name</div>
-                <div>latitude</div>
-                <div>longitude</div>
-                <div>timestamp</div>
-                <div>file_path</div>
-            </div>
+        <div className="overflow-y-scroll max-h-screen">
+        <table className="table table-xs">
+            <thead>
+                <tr>
+                    <th>status</th>
+                    <th>file_name</th>
+                    <th>latitude</th>
+                    <th>longitude</th>
+                    <th>timestamp</th>
+                    <th>file_path</th>
+                </tr>
+            </thead>
+            <tbody>
             {ImageList.map((image) => (
-                <div key={image.id} className="grid grid-cols-6">
-                    <div>
+                <tr key={image.id}>
+                    <td>
                         {image.file_path ? (
                             <p className="text-green-500">Have</p>
                         ) :
                         (<p className="text-red-500">Not</p>)
                     }
-                    </div>
-                    <div>
+                    </td>
+                    <td>
                         {image.file_name}
-                    </div>
-                    <div>
+                    </td>
+                    <td>
                         {image.latitude}
-                    </div>
-                    <div>
+                    </td>
+                    <td>
                         {image.longitude}
-                    </div>
-                    <div>
+                    </td>
+                    <td>
                         {image.timestamp.toISOString()}
-                    </div>
-                    <div>
+                    </td>
+                    <td>
                         {image.file_path}
-                    </div>
-                </div>
+                    </td>
+                </tr>
             ))}
+            </tbody>
+        </table>        
         </div>
     )
 }

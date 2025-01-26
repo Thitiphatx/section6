@@ -26,7 +26,12 @@ export default function ResourceImageUpload({ CurrentList, id }: { CurrentList: 
 	};
 	return (
 		<div>
-			<input type="file" onChange={handleFileUpload} multiple/>
+			<label className="form-control w-full max-w-xs">
+				<div className="label">
+					<span className="label-text">Pick a file</span>
+				</div>
+				<input type="file" onChange={handleFileUpload} multiple className="file-input file-input-bordered w-full max-w-xs" />
+			</label>
 		</div>
 	)
 }
