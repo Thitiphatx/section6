@@ -1,11 +1,11 @@
 "use server";
 import { prisma } from "@/app/lib/prisma";
-import fs from 'fs/promises';  // Use fs/promises for async functions
+import fs from 'fs/promises';
 import path from 'path';
 
 export async function uploadImage(resourceId: number, formData: FormData) {
     const resourcePath = path.join("resources", `${resourceId}`);
-    const uploadFolder = path.join(process.cwd(), resourcePath);
+    const uploadFolder = path.join(process.cwd(), "..", resourcePath);
 
     try {
         // Ensure the directory exists
@@ -17,7 +17,7 @@ export async function uploadImage(resourceId: number, formData: FormData) {
                 const buffer = Buffer.from(await value.arrayBuffer());
                 const filename = value.name.replace(/\s+/g, "_");  // Use regex for replacing spaces
                 const savePath = path.join(uploadFolder, filename);
-                
+
                 // Write the file to the directory
                 await fs.writeFile(savePath, buffer);
 
