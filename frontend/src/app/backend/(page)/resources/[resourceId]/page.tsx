@@ -1,7 +1,9 @@
 import ResourceControlPanel from "@/app/backend/components/resource_control_panel";
 import ResourceImageTable from "@/app/backend/components/resource_image_table";
 import ResourceImageUpload from "@/app/backend/components/resource_image_upload";
-import { prisma } from "@/app/lib/prisma"
+import prisma from "@/app/lib/prisma"
+import { ResourceContext } from "./context";
+import ResourceDashboard from "@/app/backend/components/resource_dashboard";
 
 interface ResourcePageProps {
 	params: Promise<{ resourceId: string }>; // params is now a Promise
@@ -17,24 +19,16 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
 		include: { Images: true }
 	})
 
+	if (!data) {
+		return (
+			<div>
+				No data
+			</div>
+		)
+	}
 	return (
 		<div>
-			<p>id: {data?.id}</p>
-			<p>name: {data?.name}</p>
-			<p>{data?.created_at.toDateString()}</p>
-			{data ? 
-				(
-					<>
-						<ResourceImageUpload CurrentList={data?.Images} id={data?.id}/>
-						<ResourceControlPanel />
-						<ResourceImageTable ImageList={data?.Images}/>
-					</>
-					
-				) : (
-					<p>No images</p>
-				)
-			}
-
+			<ResourceDashboard data={data} />
 		</div>
 	)
 }

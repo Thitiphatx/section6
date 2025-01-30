@@ -1,8 +1,7 @@
 "use server"
 
-import { signIn } from "next-auth/react"
+import prisma from "../lib/prisma"
 import { SigninFormSchema, SignupFormSchema } from "./schema"
-import { prisma } from "../lib/prisma"
 import { hashSync } from "bcryptjs"
 
 export async function SignUpAction(prevState: any, formData: FormData) {
@@ -21,7 +20,8 @@ export async function SignUpAction(prevState: any, formData: FormData) {
         return {
             ...prevState,
             data,
-            errors: validationResult.error.flatten().fieldErrors
+            errors: validationResult.error.flatten().fieldErrors,
+            success: false
         }
     }
     const email = formData.get("email") as string;
@@ -58,7 +58,8 @@ export async function SignUpAction(prevState: any, formData: FormData) {
         ...prevState,
         data,
         errors: null,
-        message: null
+        message: null,
+        success: true
     }
 }
 

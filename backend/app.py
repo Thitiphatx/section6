@@ -6,46 +6,56 @@ import os
 from PIL import Image
 import numpy as np
 import torch
-
 from operations.data_preparation import color_mapper
+import sys
+IMAGE_DIR = '../resources'
+
 
 app = Flask(__name__)
 CORS(app)
 
+
 # Load model once at startup
-config_file = 'pspnet_r50-d8_4xb2-40k_cityscapes-512x1024.py'
-checkpoint_file = 'pspnet_r50-d8_512x1024_40k_cityscapes_20200605_003338-2966598c.pth'
-model = init_model(config_file, checkpoint_file, device='cuda:0')
+config_path = 'mmsegmentation/configs/pspnet/pspnet_r50-d8_4xb2-40k_cityscapes-512x1024.py'
+checkpoint_path = 'mmsegmentation/checkpoints/pspnet/pspnet_r50-d8_512x1024_40k_cityscapes_20200605_003338-2966598c.pth'
 
-IMAGE_DIR = 'resources/1_Data_Pic/IMAGE_OUTPUT'
 
-@app.route('/list_images', methods=['GET'])
-def list_images():
-    try:
-        images = os.listdir(IMAGE_DIR)
-        return jsonify({'images': images})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+model = init_model(config_path, checkpoint_path, device='cuda:0')
 
-@app.route('/segment_image', methods=['GET'])
+@app.route('/api/backend/getModelList', methods=['GET'])
+def list_model():
+    models = ["pspnet_r50-d8_4xb2-40k_cityscapes-512x1024", "deeplabv3_r18b-d8_4xb2-80k_cityscapes-512x1024"]
+    return jsonify({
+        'models': models
+    })
+
+@app.route('/api/backend/segment_image', methods=['GET'])
 def segment_image():
     try:
         # # Get the image name and class ID from the request
-        image_name = request.args.get('image_name')
+        resource_id = request.args.get('resourceId')
+
         # Load the image from the server
-        image_path = os.path.join(IMAGE_DIR, image_name).replace("\\", "/")
-        if not os.path.exists(image_path):
-            return jsonify({'error': 'Image not found'}), 404
+        resource_path = os.path.join(IMAGE_DIR, resource_id).replace("\\", "/")
+        save_path = os.path.join("..", "segmentation", resource_id, "compress").replace("\\", "/")
 
-        # # Perform segmentation
-        raw_result = inference_model(model, image_path)
-        result = raw_result.pred_sem_seg.data.cpu()[0]
+        if not os.path.exists(resource_path):
+            return jsonify({'error': 'Resource not found'}), 404
 
-        mask = color_mapper(result)
+        os.makedirs(save_path, exist_ok=True)
+        results = {}
+
+        for image_name in os.listdir(resource_path):
+            image_path = os.path.join(resource_path, image_name)
+            if not image_name.lower().endswith(('.jpg', '.jpeg')):
+                continue
+            raw_result = inference_model(model, image_path)
+            result = raw_result.pred_sem_seg.data.cpu()[0]
+            mask = color_mapper(result)
 
 
-        npz_path = 'predictions/'+image_name.split(".")[0]+'.npz'
-        np.savez_compressed(npz_path, tensor=mask)
+            save_name = save_path+"/"+image_name.split(".")[0]+'.npz'
+            np.savez_compressed(save_name, tensor=mask)
 
         return jsonify({'status': 200}), 200
 

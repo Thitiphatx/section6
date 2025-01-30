@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@/app/lib/prisma";
+import prisma from "@/app/lib/prisma";
 
 export interface ImageData {
     file_name: string;

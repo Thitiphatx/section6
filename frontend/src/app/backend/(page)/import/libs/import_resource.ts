@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@/app/lib/prisma";
+import prisma from "@/app/lib/prisma";
 import { create_image_data, ImageData } from "./create_image_data";
 
 export interface ImportResource {
@@ -20,5 +20,4 @@ export const import_resource = async (resource: ImportResource)=> {
         }
     })
     await create_image_data(new_resource.id, resource.Images);
-    // console.log(result)
 }

@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/prisma";
+import prisma from "@/app/lib/prisma";
 import NextAuth, { DefaultSession, NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { JWT } from "next-auth/jwt";

@@ -3,6 +3,13 @@
 import { useActionState, useEffect } from "react";
 import { SignInAction } from "../actions";
 import { signIn } from "next-auth/react";
+import { FloatLabel } from "primereact/floatlabel";
+import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
+import { Divider } from "primereact/divider";
+import { useRouter } from "next/navigation";
 
 const initialState = {
     errors: null,
@@ -16,11 +23,11 @@ const initialState = {
 
 export default function SignInForm() {
     const [state, action, pending] = useActionState(SignInAction, initialState)
-
-    useEffect(()=> {
-        const login = async()=> {
+    const router = useRouter();
+    useEffect(() => {
+        const login = async () => {
             console.log(state)
-            await signIn("credentials",{
+            await signIn("credentials", {
                 email: state.data.email,
                 password: state.data.password,
                 redirect: true
@@ -33,33 +40,26 @@ export default function SignInForm() {
     }, [state])
 
     return (
-        <div className="mx-auto max-w-lg bg-base-100 p-5 rounded-lg mt-5">
-            <h1 className="text-3xl font-bold text-center">SignIn</h1>
-            <form action={action} className="w-full">
-                <label className="form-control w-full">
-                    <div className="label">
-                        <span className="label-text">Email</span>
-                    </div>
-                    <input name="email" type="email" placeholder="Type here" defaultValue={state.data.email} className="input input-bordered w-full" />
-                    <div className="label">
-                        {state?.errors?.email && <span className="label-text-alt text-error">{state.errors.email}</span>}
-                    </div>
-                </label>
-                <label className="form-control w-full">
-                    <div className="label">
-                        <span className="label-text">Password</span>
-                    </div>
-                    <input name="password" type="password" placeholder="Type here" defaultValue={state.data.password} className="input input-bordered w-full" />
-                    <div className="label">
-                        {state?.errors?.password && <span className="label-text-alt text-error">{state.errors.password}</span>}
-                    </div>
-                </label>
-                <button className="btn btn-primary btn-block" disabled={pending}>
-                    {pending ? <span className="loading loading-spinner"></span> : 'SignIn'}
-                </button>
+        <Card title="Signin" className="mx-auto max-w-xl mt-5">
+            <form action={action} className="w-full flex flex-col gap-5">
+                <div>
+                    <FloatLabel className="flex flex-col gap-2">
+                        <InputText className="w-full" name="email" defaultValue={state.data.email} type="email" tabIndex={1} invalid={state?.errors?.email} />
+                        <label>Email</label>
+                    </FloatLabel>
+                    <small className="p-error">{state?.errors?.email}</small>
+                </div>
+                <div>
+                    <FloatLabel className="flex flex-col gap-2">
+                        <Password className="w-full" pt={{ input: { className: 'w-full' } }} name="password" defaultValue={state.data.password} feedback={false} tabIndex={2} invalid={state?.errors?.password} />
+                        <label>Password</label>
+                    </FloatLabel>
+                    <small className="p-error">{state?.errors?.password}</small>
+                </div>
+                <Button label="Signin" loading={pending} />
             </form>
-            <div className="divider">or</div>
-            <a href="/signup" className="btn btn-block btn-ghost">signup</a>
-        </div>
+            <Divider />
+            <Button className="w-full" label="Signup" severity="secondary" onClick={()=> router.push("/signup")} />
+        </Card>
     )
 }
