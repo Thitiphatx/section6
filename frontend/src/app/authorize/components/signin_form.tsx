@@ -1,7 +1,7 @@
 "use client"
 
 import { useActionState, useEffect } from "react";
-import { SignInAction } from "../actions";
+import { SignInAction } from "../utils/actions";
 import { signIn } from "next-auth/react";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
@@ -26,7 +26,6 @@ export default function SignInForm() {
     const router = useRouter();
     useEffect(() => {
         const login = async () => {
-            console.log(state)
             await signIn("credentials", {
                 email: state.data.email,
                 password: state.data.password,
@@ -59,7 +58,7 @@ export default function SignInForm() {
                 <Button label="Signin" loading={pending} />
             </form>
             <Divider />
-            <Button className="w-full" label="Signup" severity="secondary" onClick={()=> router.push("/signup")} />
+            <Button className="w-full" label="Signup" severity="secondary" onClick={()=> router.push("/authorize/signup")} />
         </Card>
     )
 }

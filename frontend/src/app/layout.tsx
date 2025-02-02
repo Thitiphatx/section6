@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Comfortaa } from "next/font/google";
 import { PrimeReactProvider } from 'primereact/api';
 import "./globals.css";
-import 'primereact/resources/themes/lara-light-green/theme.css';
 import 'primeicons/primeicons.css';
+import 'primereact/resources/themes/lara-light-green/theme.css';
 
 import Navbar from "./components/navbar";
 import { SessionProvider } from "next-auth/react";
@@ -26,7 +26,6 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-
 	return (
 		<html lang="en" data-theme="dark">
 			<body className={`${comfortaa.className}  antialiased bg-base-300 min-h-screen`} >

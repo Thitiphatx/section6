@@ -59,10 +59,11 @@ export default function Navbar() {
     const profileItems = [
         {
             label: 'Profile',
+            url: '/account/profile'
         },
         {
-            label: 'Backend',
-            url: '/backend'
+            label: 'Dashboard',
+            url: '/dashboard'
         },
         {
             label: 'Signout',
@@ -73,7 +74,7 @@ export default function Navbar() {
         <div>
 
             {!session?.user.id ? (
-                <Button label="Signin" onClick={() => router.push("/signin")} />
+                <Button label="Signin" onClick={() => router.push("/authorize/signin")} />
             ) : (
                 <>
                     <Menu model={profileItems} ref={menuRight} popup popupAlignment="right" />

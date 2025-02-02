@@ -36,4 +36,4 @@ RUN pip install flask flask_cors
 
 EXPOSE 5000
 
-CMD ["python", "test.py"]
+CMD ["python", "app.py"]

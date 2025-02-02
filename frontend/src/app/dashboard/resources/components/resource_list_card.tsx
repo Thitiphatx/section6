@@ -24,7 +24,7 @@ export default function ResourceListCard({ resources_list }: { resources_list: R
     ]
     const itemTemplate = (data: Resources) => {
         return (
-            <div className="cursor-pointer" onClick={() => router.push(`/backend/resources/${data.id}`)}>
+            <div className="cursor-pointer" onClick={() => router.push(`/dashboard/resources/${data.id}`)}>
                 <div className="p-5 flex flex-row justify-between">
                     <div className="flex flex-row gap-5">
                         <Tag severity="success" value="Ready"></Tag>

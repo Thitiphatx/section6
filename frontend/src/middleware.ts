@@ -3,7 +3,8 @@ import { auth } from "./app/lib/auth"; // Ensure this path is correct
 
 export default async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
-    const isProtectedRoute = pathname.startsWith('/backend');
+    const isProtectedRoute = pathname.startsWith(`/dashboard`);
+    const authorizeRoute = pathname.startsWith('/authorize');
 
     const session = await auth();
 
@@ -17,7 +18,7 @@ export default async function middleware(req: NextRequest) {
     //   }
 
 
-    if (session?.user.id && (pathname.startsWith('/signin') || pathname.startsWith('/signup'))) {
+    if (authorizeRoute && session?.user.id) {
         return NextResponse.redirect(homeUrl);
     }
 
@@ -30,5 +31,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/backend/:path*', '/signin', '/signup'], // Matches all paths under /backend/*
+    matcher: ['/dashboard/:path*', '/authorize/:path*'], // Matches all paths under /backend/*
 };

@@ -1,7 +1,7 @@
 "use client"
 
 import { useActionState, useEffect } from "react"
-import { SignUpAction } from "../actions"
+import { SignUpAction } from "../utils/actions"
 import { Card } from "primereact/card"
 import { FloatLabel } from "primereact/floatlabel"
 import { InputText } from "primereact/inputtext"
@@ -65,7 +65,7 @@ export default function SignUpForm() {
                 <Button label="Sign up" />
             </form>
             <Divider />
-            <Button label="Sign in" severity="secondary" className="w-full" onClick={() => router.push("/signin")} />
+            <Button label="Sign in" severity="secondary" className="w-full" onClick={() => router.push("/authorize/signin")} />
         </Card>
     )
 }

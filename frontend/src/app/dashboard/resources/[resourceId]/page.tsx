@@ -1,9 +1,5 @@
-import ResourceControlPanel from "@/app/backend/components/resource_control_panel";
-import ResourceImageTable from "@/app/backend/components/resource_image_table";
-import ResourceImageUpload from "@/app/backend/components/resource_image_upload";
 import prisma from "@/app/lib/prisma"
-import { ResourceContext } from "./context";
-import ResourceDashboard from "@/app/backend/components/resource_dashboard";
+import ResourceDashboard from "../components/resource_dashboard";
 
 interface ResourcePageProps {
 	params: Promise<{ resourceId: string }>; // params is now a Promise

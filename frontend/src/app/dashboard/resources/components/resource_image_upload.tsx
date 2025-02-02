@@ -1,11 +1,12 @@
 "use client"
 
 import { uploadImage } from "../utils/upload_image";
-import { useResourceContext } from "../(page)/resources/[resourceId]/context";
 import { Toast } from "primereact/toast";
 import { Tooltip } from "primereact/tooltip";
 import { FileUpload, FileUploadHandlerEvent, FileUploadHeaderTemplateOptions } from "primereact/fileupload";
-import { ChangeEvent, useRef, useState } from "react";
+import { useRef } from "react";
+import { useResourceContext } from "../[resourceId]/context";
+import { Card } from "primereact/card";
 
 export default function ResourceImageUpload() {
 	const data = useResourceContext();
@@ -41,7 +42,7 @@ export default function ResourceImageUpload() {
 			</div>
 		);
 	};
-	
+
 	const handleFileUpload = async (event: FileUploadHandlerEvent) => {
 		if (!event.files) return;
 
@@ -73,27 +74,25 @@ export default function ResourceImageUpload() {
 	};
 
 	return (
-		<div>
-			<div>
-				<Toast ref={toast}></Toast>
-				<Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-				<Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
-				<Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+		<Card title="Upload image">
+			<Toast ref={toast}></Toast>
+			<Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
+			<Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
+			<Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
-				<FileUpload
-					ref={fileUploadRef}
-					name="demo[]"
-					multiple
-					accept="image/*"
-					maxFileSize={10000000000}
-					url="/api/upload"
-					headerTemplate={headerTemplate}
-					emptyTemplate={emptyTemplate}
-					chooseOptions={chooseOptions}
-					uploadOptions={uploadOptions}
-					cancelOptions={cancelOptions}
-				/>
-			</div>
-		</div>
+			<FileUpload
+				ref={fileUploadRef}
+				name="demo[]"
+				multiple
+				accept="image/*"
+				maxFileSize={10000000000}
+				url="/api/upload"
+				headerTemplate={headerTemplate}
+				emptyTemplate={emptyTemplate}
+				chooseOptions={chooseOptions}
+				uploadOptions={uploadOptions}
+				cancelOptions={cancelOptions}
+			/>
+		</Card>
 	)
 }

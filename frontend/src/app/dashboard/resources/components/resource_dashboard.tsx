@@ -1,11 +1,12 @@
 "use client"
 
 import { Card } from "primereact/card"
-import { ResourceContext } from "../(page)/resources/[resourceId]/context"
-import { ResourceWithImage } from "../(page)/resources/[resourceId]/types"
 import ResourceControlPanel from "./resource_control_panel"
 import ResourceImageTable from "./resource_image_table"
 import ResourceImageUpload from "./resource_image_upload"
+import { ResourceContext } from "../[resourceId]/context"
+import { ResourceWithImage } from "../[resourceId]/types"
+import ResourceInfoPanel from "./resource_info_panel"
 
 interface props {
     data: ResourceWithImage
@@ -13,15 +14,13 @@ interface props {
 
 export default function ResourceDashboard({ data }: props) {
     return (
-        <Card title="Resource">
-            <p>id: {data?.id}</p>
-            <p>name: {data?.name}</p>
-            <p>{data?.created_at.toDateString()}</p>
-            <ResourceContext.Provider value={data}>
+        <ResourceContext.Provider value={data}>
+            <div className="space-y-5">
                 <ResourceImageUpload />
+                <ResourceInfoPanel />
                 <ResourceControlPanel />
                 <ResourceImageTable />
-            </ResourceContext.Provider>
-        </Card>
+            </div>
+        </ResourceContext.Provider>
     )
 }
