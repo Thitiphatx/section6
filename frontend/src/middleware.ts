@@ -21,8 +21,7 @@ export default async function middleware(req: NextRequest) {
     if (authorizeRoute && session?.user.id) {
         return NextResponse.redirect(homeUrl);
     }
-
-    if (isProtectedRoute && session?.user.role !== "admin") {
+    if (isProtectedRoute && session?.user.role !== "ADMIN") {
         // Redirect to / if user is not an admin
         return NextResponse.redirect(homeUrl);
     }

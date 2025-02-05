@@ -1,21 +1,17 @@
 "use client"
 
-import { uploadImage } from "../utils/upload_image";
 import { Toast } from "primereact/toast";
 import { Tooltip } from "primereact/tooltip";
-import { FileUpload, FileUploadHandlerEvent, FileUploadHeaderTemplateOptions } from "primereact/fileupload";
+import { FileUpload, FileUploadBeforeUploadEvent, FileUploadHandlerEvent, FileUploadHeaderTemplateOptions } from "primereact/fileupload";
 import { useRef } from "react";
 import { useResourceContext } from "../[resourceId]/context";
 import { Card } from "primereact/card";
+import { ResourceWithImage } from "../[resourceId]/types";
 
 export default function ResourceImageUpload() {
-	const data = useResourceContext();
+	const data: ResourceWithImage = useResourceContext();
 	const toast = useRef<Toast>(null);
 	const fileUploadRef = useRef<FileUpload>(null);
-
-	const handleSubmit = async (event: React.FormEvent) => {
-
-	}
 
 	const headerTemplate = (options: FileUploadHeaderTemplateOptions) => {
 		const { className, chooseButton, uploadButton, cancelButton } = options;
@@ -42,7 +38,6 @@ export default function ResourceImageUpload() {
 			</div>
 		);
 	};
-
 	const handleFileUpload = async (event: FileUploadHandlerEvent) => {
 		if (!event.files) return;
 
@@ -61,7 +56,6 @@ export default function ResourceImageUpload() {
 		}
 
 		validFiles.forEach(file => formData.append("images[]", file));
-		await uploadImage(data.id, formData);
 	};
 	const chooseOptions = {
 		className: 'p-button-outlined p-button-info'
@@ -72,7 +66,10 @@ export default function ResourceImageUpload() {
 	const cancelOptions = {
 		className: 'p-button-danger p-button-rounded p-button-outlined'
 	};
-
+	const onBeforeUploader = (event: FileUploadBeforeUploadEvent) => {
+		const formData = event.formData
+		formData.append("resourceId", data.id);
+	};
 	return (
 		<Card title="Upload image">
 			<Toast ref={toast}></Toast>
@@ -82,12 +79,13 @@ export default function ResourceImageUpload() {
 
 			<FileUpload
 				ref={fileUploadRef}
-				name="demo[]"
+				name="file"
 				multiple
 				accept="image/*"
 				maxFileSize={10000000000}
 				url="/api/upload"
 				headerTemplate={headerTemplate}
+				onBeforeUpload={onBeforeUploader}
 				emptyTemplate={emptyTemplate}
 				chooseOptions={chooseOptions}
 				uploadOptions={uploadOptions}

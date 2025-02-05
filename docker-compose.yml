@@ -33,6 +33,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: postgres
+    restart: always
     environment:
       POSTGRES_DB: section6
       POSTGRES_USER: admin

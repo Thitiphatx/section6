@@ -8,10 +8,8 @@ interface ResourcePageProps {
 export default async function ResourcePage({ params }: ResourcePageProps) {
 	const { resourceId } = await params; // Await the params to extract resourceId
 
-  	const id = parseInt(resourceId, 10);
-
 	const data = await prisma.resources.findFirst({
-		where: { id: id },
+		where: { id: resourceId },
 		include: { Images: true }
 	})
 
