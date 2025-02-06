@@ -4,19 +4,20 @@ import { Card } from "primereact/card"
 import { useResourceContext } from "../[resourceId]/context"
 import { Resources } from "@prisma/client";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
-import { useState } from "react";
+import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
 
 export default function ResourceInfoPanel() {
     const data: Resources = useResourceContext();
-    const [datetime24h, setDateTime24h] = useState(null);
+
     return (
-        <Card title="Resource info">
-            <form>
-                <div className="flex flex-col gap-5">
+        <Card>
+            <form>  
+                    <label className="font-bold block mb-2">resource name</label>
                     <InputText defaultValue={data.name} />
-                    <Calendar value={datetime24h} onChange={(e) => setDateTime24h(e.value)} showTime hourFormat="24" />
-                </div>
+                    <p className="text-sm mt-5">created at {data.created_at.toDateString()}</p>
+                    <Divider />
+                    <Button label="update" icon="pi pi-check" iconPos="right"/>
             </form>
         </Card>
     )

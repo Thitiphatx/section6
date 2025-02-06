@@ -8,6 +8,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     try {
         const formData = await req.formData();
         const files = formData.getAll("files") as File[];
+        console.log(files)
         const resourceId = formData.get("resourceId") as string;
         // check is id valid
         try {

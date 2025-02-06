@@ -2,20 +2,15 @@ import { PanelMenu } from "primereact/panelmenu";
 
 const navItems = [
     {
-        label: 'Profile',
+        label: 'profile',
         icon: 'pi pi-user',
         url: '/account/profile'
     },
     {
-        label: 'Resource',
-        icon: 'pi pi-file-import',
-        url: '/dashboard/resources'
-    },
-    {
-        label: 'Segmentation',
-        icon: 'pi pi-file-import',
-        url: '/dashboard/segmentation'
-    },
+        label: 'purchases',
+        icon: 'pi pi-receipt',
+        url: '/account/purchases'
+    }
 ]
 
 export default function AccountLayout({ children }: Readonly<{ children: React.ReactNode }>) {

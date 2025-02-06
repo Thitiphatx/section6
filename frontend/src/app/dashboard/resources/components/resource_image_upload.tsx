@@ -38,25 +38,6 @@ export default function ResourceImageUpload() {
 			</div>
 		);
 	};
-	const handleFileUpload = async (event: FileUploadHandlerEvent) => {
-		if (!event.files) return;
-
-		const files = Array.from(event.files);
-		console.log(files)
-		const formData = new FormData();
-
-		// Filter images matching the filenames listed in `data?.Images`
-		const validFiles = files.filter(file =>
-			data.Images.some((image: any) => image.file_name === file.name)
-		);
-
-		if (validFiles.length === 0) {
-			alert("No valid files to upload.");
-			return;
-		}
-
-		validFiles.forEach(file => formData.append("images[]", file));
-	};
 	const chooseOptions = {
 		className: 'p-button-outlined p-button-info'
 	};
@@ -79,7 +60,7 @@ export default function ResourceImageUpload() {
 
 			<FileUpload
 				ref={fileUploadRef}
-				name="file"
+				name="files"
 				multiple
 				accept="image/*"
 				maxFileSize={10000000000}

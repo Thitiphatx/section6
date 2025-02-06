@@ -5,7 +5,7 @@ import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
 
-export default function ResourceControlPanel() {
+export default function ResourceModelPanel() {
     const [model_list, setModelList] = useState<string[]>([]);
     const [selectedModel, setSelectedModel] = useState();
     useEffect(() => {

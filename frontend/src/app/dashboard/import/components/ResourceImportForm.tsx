@@ -8,6 +8,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { FileUpload, FileUploadHandlerEvent, FileUploadSelectEvent } from "primereact/fileupload";
 import { useState } from "react";
 import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
 
 export default function ResourceImportForm() {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,16 +52,16 @@ export default function ResourceImportForm() {
 	}
 
 	return (
-		<Card title="Import new resource">
-			<form onSubmit={handleSubmit} className="flex flex-col gap-5">
+		<Card>
+			<form onSubmit={handleSubmit}>
 				<div>
-					<FloatLabel className="flex flex-col">
-						<InputText name="resource_name" onChange={(e) => setResourceName(e.target.value)} />
-						<label>Resource Name</label>
-					</FloatLabel>
+					<label className="font-bold block mb-2">resource name</label>
+					<InputText name="resource_name" onChange={(e) => setResourceName(e.target.value)} />
 					<small className="p-error"></small>
 				</div>
+				<Divider />
 				<div>
+					<label className="font-bold block mb-2">resource file (.txt)</label>
 					<FileUpload 
 						name="resource"
 						mode="basic"
@@ -68,12 +69,12 @@ export default function ResourceImportForm() {
 						maxFileSize={1000000} 
 						customUpload
 						auto={false}
-						chooseLabel="Choose Resource"
+						chooseLabel="choose resource"
 						onSelect={handleFileSelect}
 					/>
 				</div>
-				
-				<Button label="Import" />
+				<Divider />
+				<Button label="import" icon="pi pi-check" iconPos="right" />
 			</form>
 		</Card>
 	)

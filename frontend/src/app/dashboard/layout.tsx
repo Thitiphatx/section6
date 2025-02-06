@@ -16,6 +16,11 @@ const navItems = [
 		icon: 'pi pi-file-import',
 		url: '/dashboard/segmentation'
 	},
+	{
+		label: 'users',
+		icon: 'pi pi-user-edit',
+		url: '/dashboard/users'
+	},
 ]
 
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
