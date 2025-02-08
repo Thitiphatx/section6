@@ -5,10 +5,10 @@ import { ResourceWithImage } from "./types";
 
 export const ResourceContext = createContext<ResourceWithImage | undefined>(undefined);
 
-export function useResourceContext() {
+export function useResourceContext(): ResourceWithImage {
     const data: ResourceWithImage = useContext(ResourceContext);
 
-    if (data === undefined) {
+    if (!data) {
         throw new Error("useResourceContext must be use with ResourceContext");
     }
     return data;

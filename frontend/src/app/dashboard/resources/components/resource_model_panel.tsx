@@ -1,42 +1,93 @@
-"use client"
+"use client";
 
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResourceContext } from "../[resourceId]/context";
+import { Toast } from "primereact/toast";
+import { Message } from "primereact/message";
+import { ResourceWithImage } from "../[resourceId]/types";
+import { Images } from "@prisma/client";
 
 export default function ResourceModelPanel() {
-    const [model_list, setModelList] = useState<string[]>([]);
-    const [selectedModel, setSelectedModel] = useState();
+    const data: ResourceWithImage = useResourceContext();
+    const [modelList, setModelList] = useState<string[]>([]);
+    const [selectedModel, setSelectedModel] = useState<string | null>(null);
+    const [isLoading, setIsloading] = useState<boolean>(false);
+    const toast = useRef<Toast>(null);
+
     useEffect(() => {
-        const fetchModel = async () => {
+        if (!checkAllImageStatus(data)) return;
+
+        const fetchModels = async () => {
             try {
-                const response = (await fetch("http://localhost:5000/api/backend/getModelList"));
+                const response = await fetch("http://localhost:5000/api/segmentation/list");
+                if (!response.ok) throw new Error("Failed to fetch models");
+
                 const result = await response.json();
                 setModelList(result.models);
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching models:", error);
             }
+        };
+
+        fetchModels();
+    }, [data]); // Ensure `data` is in dependencies
+
+    const checkAllImageStatus = (resource: ResourceWithImage): boolean => {
+        return resource.Images.every((image: Images) => image.status === "AVAILABLE");
+    };
+
+    const handleSegmentation = async () => {
+        if (!selectedModel) {
+            toast.current?.show({ severity: "error", summary: "Error", detail: "Please select a model", life: 3000 });
+            return;
         }
-        fetchModel();
-    }, [])
+        
+        try {
+            const response = await fetch("http://localhost:5000/api/segmentation/start",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        resourceId: data.id,
+                        modelId: selectedModel
+                    })
+                }
+            );
+            const result = await response.json();
+            console.log(result);
+        } catch(error) {
+            console.log(error);
+        }
+    };
+
     return (
         <Card title="Segmentation">
-            {model_list.length != 0 ? (
-                <div className="p-inputgroup">
-                    <Dropdown
-                        value={selectedModel}
-                        onChange={(e) => setSelectedModel(e.value)}
-                        options={model_list.map((model) => ({ name: model, code: model }))}
-                        optionLabel="name"
-                        placeholder="Select a Model" className="w-full md:w-14rem" />
-                    <Button label="Start" />
-                </div>
+            <Toast ref={toast} />
+            {!checkAllImageStatus(data) ? (
+                <Message severity="warn" text="All images must be available. Please upload missing images." />
             ) : (
-                <div>
-                    No model available.
-                </div>
+                <form onSubmit={(e) => { e.preventDefault(); handleSegmentation(); }}>
+                    {modelList.length > 0 ? (
+                        <div className="p-inputgroup">
+                            <Dropdown
+                                name="model_id"
+                                value={selectedModel}
+                                onChange={(e) => setSelectedModel(e.value)}
+                                options={modelList}
+                                placeholder="Select a Model"
+                            />
+                            <Button type="submit" label="Start" />
+                        </div>
+                    ) : (
+                        <Message severity="error" text="Cannot connect to the server" />
+                    )}
+                </form>
             )}
         </Card>
-    )
+    );
 }
