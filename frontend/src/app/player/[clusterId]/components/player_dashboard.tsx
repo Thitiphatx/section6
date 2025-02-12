@@ -3,6 +3,7 @@
 import { Card } from "primereact/card"
 import PlayerPanel from "./player_panel"
 import PlayerController from "./player_controller"
+import PlayerInfo from "./player_info"
 
 export default function PlayerDashboard() {
     return (
@@ -13,6 +14,9 @@ export default function PlayerDashboard() {
 
                 {/* controller */}
                 <PlayerController />
+
+                {/* info */}
+                <PlayerInfo />
             </div>
         </Card>
     )

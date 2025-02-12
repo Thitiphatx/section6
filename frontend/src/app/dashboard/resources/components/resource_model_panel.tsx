@@ -9,12 +9,14 @@ import { Toast } from "primereact/toast";
 import { Message } from "primereact/message";
 import { ResourceWithImage } from "../[resourceId]/types";
 import { Images } from "@prisma/client";
+import { ProgressBar } from "primereact/progressbar";
+import React from "react";
 
 export default function ResourceModelPanel() {
     const data: ResourceWithImage = useResourceContext();
     const [modelList, setModelList] = useState<string[]>([]);
+    const [progress, setProgress] = useState(null);
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
-    const [isLoading, setIsloading] = useState<boolean>(false);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -44,7 +46,7 @@ export default function ResourceModelPanel() {
             toast.current?.show({ severity: "error", summary: "Error", detail: "Please select a model", life: 3000 });
             return;
         }
-        
+
         try {
             const response = await fetch("http://localhost:5000/api/segmentation/start",
                 {
@@ -59,11 +61,29 @@ export default function ResourceModelPanel() {
                 }
             );
             const result = await response.json();
-            console.log(result);
-        } catch(error) {
+
+            const eventSource = new EventSource(`http://localhost:5000/api/segmentation/progress/${data.id}`);
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                setProgress(data);
+
+                if (data.status === "done") {
+                    eventSource.close();
+                }
+            }
+
+        } catch (error) {
             console.log(error);
         }
     };
+
+    const progressTemplate = (value: any) => {
+        return (
+            <React.Fragment>
+                {value}/{progress.total}
+            </React.Fragment>
+        )
+    }
 
     return (
         <Card title="Segmentation">
@@ -87,6 +107,12 @@ export default function ResourceModelPanel() {
                         <Message severity="error" text="Cannot connect to the server" />
                     )}
                 </form>
+            )}
+            {progress && (
+                <div> 
+                    <p>Processing Image {progress.index} of {progress.total}</p>
+                    {progress.status === "done" && <p>Segmentation Complete!</p>}
+                </div>
             )}
         </Card>
     );

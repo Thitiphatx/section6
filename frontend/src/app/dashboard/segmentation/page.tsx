@@ -1,7 +1,13 @@
-"use client"
+import prisma from "@/app/lib/prisma";
+import SegmentList from "./components/segment_list";
+import { SegmentContext } from "./utils/context";
+import SegmentDashboard from "./components/segment_dashboard";
 
-export default function Page() {
-  return (
-    <div>page</div>
-  )
+export default async function Segment() {
+	const data = await prisma.clusters.findMany();
+	return (
+		<div>
+			<SegmentDashboard />
+		</div>
+	)
 }

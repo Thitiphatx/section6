@@ -34,7 +34,7 @@ export default function ResourceImportForm() {
 			const rows = text.trim().split("\n");
 			const data = rows.slice(1).map((line) => {
 				const [id, image_name, time, X, Y] = line.split(",");
-				const [lat, lon] = Convert_XYZ(parseFloat(X), parseFloat(Y));
+				const [lon, lat] = Convert_XYZ(parseFloat(X), parseFloat(Y));
 				return {
 					latitude: lat,
 					longitude: lon,
