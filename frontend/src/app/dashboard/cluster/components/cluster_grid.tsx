@@ -1,13 +1,13 @@
 "use client"
 
 import { Clusters } from "@prisma/client";
-import { useClusterContext } from "../utils/context"
+import { useClustersContext } from "../utils/context"
 import Image from "next/image";
 import { Tag } from "primereact/tag";
 import Link from "next/link";
 
 export default function ClusterGrid() {
-    const data = useClusterContext();
+    const data = useClustersContext();
 
     return (
         <div

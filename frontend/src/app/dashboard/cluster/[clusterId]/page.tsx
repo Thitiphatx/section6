@@ -1,4 +1,5 @@
 import prisma from "@/app/lib/prisma";
+import ClusterDashboard from "./components/cluster_dashboard";
 
 export default async function ClusterPage({ params }: { params: Promise<{ clusterId: string }> }) {
     const { clusterId } = await params;
@@ -14,11 +15,21 @@ export default async function ClusterPage({ params }: { params: Promise<{ cluste
                 }
             }
         })
-        console.log(data);
     } catch (error) {
         console.log(error);
     }
+
+    if (!data) {
+        return (
+            <div>
+                Something went wrong
+            </div>
+        )
+    }
+
     return (
-        <div>{clusterId}</div>
+        <div>
+           <ClusterDashboard data={data}/> 
+        </div>
     )
 }
