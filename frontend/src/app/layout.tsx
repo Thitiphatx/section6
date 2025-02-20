@@ -27,12 +27,14 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" data-theme="dark">
-			<body className={`${comfortaa.className}  antialiased bg-base-300 min-h-screen`} >
+		<html lang="en" data-theme="dark" suppressHydrationWarning>
+			<body className={`${comfortaa.className}  antialiased min-h-screen flex flex-col bg-zinc-100`}>
 				<SessionProvider>
 					<PrimeReactProvider value={value}>
-						<header><Navbar /></header>
-						<main>
+						<header className="absolute w-full">
+							<Navbar />
+						</header>
+						<main className="flex-1">
 							{children}
 						</main>
 					</PrimeReactProvider>

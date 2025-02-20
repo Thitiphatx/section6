@@ -1,17 +1,18 @@
 import prisma from "@/app/lib/prisma";
-import NextAuth, { DefaultSession, NextAuthConfig } from "next-auth"
-import Credentials from "next-auth/providers/credentials"
+import NextAuth, { AuthError, DefaultSession, NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { compare } from "bcryptjs";
+import { signInSchema } from "./zod";
 
 declare module "next-auth" {
     interface User {
-        role: string
+        role: string;
     }
     interface Session {
         user: {
-            role: string
-        } & DefaultSession["user"]
+            role: string;
+        } & DefaultSession["user"];
     }
 }
 
@@ -22,51 +23,69 @@ declare module "next-auth/jwt" {
     }
 }
 
-export const authConfig: NextAuthConfig = {
+const authConfig: NextAuthConfig = {
     providers: [
         Credentials({
             name: "Credentials",
             credentials: {
                 email: { label: 'Email', type: 'email' },
-                password: { label: 'Password', type: 'password' }
+                password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
                 const { email, password } = credentials as { email: string; password: string };
 
-                if (!email || !password) return null;
+                // Validate credentials using Zod schema
+                const parsedCredentials = signInSchema.safeParse(credentials);
+                if (!parsedCredentials.success) {
+                    console.error("Invalid credentials:", parsedCredentials.error.errors);
+                    return null;
+                }
 
-                const user = await prisma.users.findFirst({ where: { email } });
-                if (!user) return null;
+                let user;
+                try {
+                    // Fetch user from the database
+                    user = await prisma.users.findFirst({ where: { email } });
+                } catch (error) {
+                    return null
+                }
+
+                if (!user) {
+                    return null
+                }
+
+                // Compare password with the hashed password in the database
                 const matched = await compare(password, user.password as string);
-                // const matched = (password == user.password as string);
-                if (!matched) return null;
+                if (!matched) {
+                    return null
+                }
+
                 return {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    role: user.role.toString()
+                    role: user.role.toString(),
                 };
-            }
-        })
+            },
+        }),
     ],
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id
-                token.role = user.role
+                token.id = user.id;
+                token.role = user.role;
             }
-            return token
+            return token;
         },
         async session({ session, token }) {
-            session.user.id = token.id ?? ""
-            session.user.role = token.role
-            return session
-        }
+            session.user.id = token.id ?? "";
+            session.user.role = token.role;
+            return session;
+        },
     },
     pages: {
-        signIn: "/signin"
+        signIn: "/authorize/signin",
     },
-    secret: process.env.AUTH_SECRET
-}
+    secret: process.env.AUTH_SECRET,
+};
 
-export const { handlers, signIn, signOut, auth } = NextAuth(authConfig)
+export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);

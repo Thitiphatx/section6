@@ -2,16 +2,17 @@
 
 import { Toast } from "primereact/toast";
 import { Tooltip } from "primereact/tooltip";
-import { FileUpload, FileUploadBeforeUploadEvent, FileUploadHandlerEvent, FileUploadHeaderTemplateOptions } from "primereact/fileupload";
-import { useRef } from "react";
+import { FileUpload, FileUploadBeforeUploadEvent, FileUploadHandlerEvent, FileUploadHeaderTemplateOptions, ItemTemplateOptions } from "primereact/fileupload";
+import { useRef, useState } from "react";
 import { useResourceContext } from "../[resourceId]/context";
 import { Card } from "primereact/card";
 import { ResourceWithImage } from "../[resourceId]/types";
+import { Button } from "primereact/button";
+import { classNames } from "primereact/utils";
 
 export default function ResourceImageUpload() {
 	const data: ResourceWithImage = useResourceContext();
 	const toast = useRef<Toast>(null);
-	const fileUploadRef = useRef<FileUpload>(null);
 
 	const headerTemplate = (options: FileUploadHeaderTemplateOptions) => {
 		const { className, chooseButton, uploadButton, cancelButton } = options;
@@ -25,7 +26,20 @@ export default function ResourceImageUpload() {
 			</div>
 		);
 	};
-
+	const itemTemplate = (inFile: object, props: ItemTemplateOptions) => {
+		const file = inFile as File;
+		return (
+			<div className="flex items-center">
+				<span className="flex flex-col text-left ml-3">
+					{file.name}
+				</span>
+				<Button type="button" icon="pi pi-times" className="p-button-outlined p-button-rounded p-button-danger ml-auto" onClick={() => onTemplateRemove(props.onRemove)} />
+			</div>
+		);
+	};
+	const onTemplateRemove = (callback: Function) => {
+		callback();
+	};
 	const emptyTemplate = () => {
 		return (
 			<div
@@ -52,14 +66,13 @@ export default function ResourceImageUpload() {
 		formData.append("resourceId", data.id);
 	};
 	return (
-		<Card title="Upload image">
+		<Card title="Upload image" className="">
 			<Toast ref={toast}></Toast>
 			<Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
 			<Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
 			<Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
 
 			<FileUpload
-				ref={fileUploadRef}
 				name="files"
 				multiple
 				accept="image/*"
@@ -68,6 +81,7 @@ export default function ResourceImageUpload() {
 				headerTemplate={headerTemplate}
 				onBeforeUpload={onBeforeUploader}
 				emptyTemplate={emptyTemplate}
+				itemTemplate={itemTemplate}
 				chooseOptions={chooseOptions}
 				uploadOptions={uploadOptions}
 				cancelOptions={cancelOptions}

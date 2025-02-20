@@ -1,11 +1,11 @@
-import VideoPlayer from "./components/player";
-import VideoPlayer2 from "./components/Player2";
+import Player2 from "./components/player";
+
 
 export default async function Player({ params }: { params: Promise<{ clusterId: string }> }) {
     const { clusterId } = await params;
     return (
-        <div>
-            <VideoPlayer2 />
+        <div className="max-w-screen-lg">
+            <Player2 />
             {/* <VideoPlayer videoSrc="/test2.mp4" /> */}
             {/* <PlayerDashboard /> */}
         </div>

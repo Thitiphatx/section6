@@ -9,7 +9,7 @@ export interface ImageData {
     timestamp: Date;
 }
 
-export async function create_image_data(resource_id: number, image_data: ImageData[]) {
+export async function create_image_data(resource_id: string, image_data: ImageData[]) {
     try {
         await prisma.images.createMany({
             data: image_data.map((image) => ({

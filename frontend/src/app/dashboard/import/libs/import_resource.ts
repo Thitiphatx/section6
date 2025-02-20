@@ -13,11 +13,19 @@ export const import_resource = async (resource: ImportResource)=> {
     // let timestamp = resource[resource.length - 1].time;
     // var date = new Date(parseFloat(timestamp) * 1000);
     // console.log(date)
-    const new_resource = await prisma.resources.create({
-        data: {
-            name: resource.name,
-            created_at: new Date(),
-        }
-    })
-    await create_image_data(new_resource.id, resource.Images);
+    try {
+        const new_resource = await prisma.resources.create({
+            data: {
+                name: resource.name,
+                created_at: new Date(),
+            }
+        })
+
+        await create_image_data(new_resource.id, resource.Images);
+        
+    } catch (error) {
+        throw new Error("Database is offline");
+    }
+
+    
 }
