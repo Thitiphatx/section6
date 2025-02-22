@@ -6,7 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signInSchema } from "@/app/lib/zod"
+import { signInSchema } from "@/libs/zod/zod"
 import { z } from "zod"
 import { handleCredentialsSignin } from "../utils/actions"
 

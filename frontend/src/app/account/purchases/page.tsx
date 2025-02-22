@@ -1,5 +1,5 @@
-import { auth } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { auth } from "@/libs/auth";
+import prisma from "@/libs/prisma";
 
 export default async function Profile() {
     const session = await auth();

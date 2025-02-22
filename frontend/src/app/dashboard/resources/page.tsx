@@ -1,6 +1,6 @@
-import prisma from "@/app/lib/prisma"
-import ResourceListCard from "./components/resource_list_card";
-import ErrorPage from "@/app/components/error";
+import prisma from "@/libs/prisma"
+import ErrorPage from "@/components/error";
+import ResourceListCard from "@/components/resources/resource_list_card";
 
 export default async function Page() {
     try {

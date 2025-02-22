@@ -1,6 +1,7 @@
 "use client"
 
-import ResourceImportForm from "./components/ResourceImportForm"
+import ResourceImportForm from "@/components/import/ResourceImportForm"
+
 
 export default function Page() {
     return (

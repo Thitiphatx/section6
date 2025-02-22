@@ -1,6 +1,6 @@
-import prisma from "@/app/lib/prisma";
-import UserDashboard from "./components/user_dashboard";
-import ErrorPage from "@/app/components/error";
+import prisma from "@/libs/prisma";
+import ErrorPage from "@/components/error";
+import UserDashboard from "@/components/users/user_dashboard";
 
 export default async function Users() {
     try {

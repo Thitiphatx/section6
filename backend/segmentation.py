@@ -2,7 +2,7 @@
 import os
 from flask import Response, json, jsonify
 from mmsegmentation.mmseg.apis.inference import init_model, inference_model
-from operations.data_preparation import color_mapper
+from operations import color_mapper
 import numpy as np
 
 from config import MODEL_LIST, MMSEGMENTATION_DIR, RESOURCE_DIR, RESULT_DIR

@@ -1,6 +1,6 @@
-import { auth } from "@/app/lib/auth";
-import ProfileDashboard from "./components/profile_dashboard";
-import prisma from "@/app/lib/prisma";
+import ProfileDashboard from "@/components/profile/profile_dashboard";
+import { auth } from "@/libs/auth";
+import prisma from "@/libs/prisma";
 
 export default async function Profile() {
     const session = await auth();

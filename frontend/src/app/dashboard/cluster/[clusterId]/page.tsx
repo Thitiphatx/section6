@@ -1,5 +1,5 @@
-import prisma from "@/app/lib/prisma";
-import ClusterDashboard from "./components/cluster_dashboard";
+import prisma from "@/libs/prisma";
+import ClusterDashboard from "../../../../components/clusters/cluster_dashboard";
 
 export default async function ClusterPage({ params }: { params: Promise<{ clusterId: string }> }) {
     const { clusterId } = await params;

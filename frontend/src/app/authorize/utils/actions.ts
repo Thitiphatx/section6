@@ -1,9 +1,9 @@
 "use server"
 
-import prisma from "../../lib/prisma"
+import prisma from "../../../libs/prisma"
 import { SigninFormSchema, SignupFormSchema } from "./schema"
 import { hashSync } from "bcryptjs"
-import { signIn, signOut } from "@/app/lib/auth"
+import { signIn, signOut } from "@/libs/auth"
 import { AuthError } from "next-auth"
 
 interface credentialsProp {

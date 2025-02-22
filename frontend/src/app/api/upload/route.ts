@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises"
 import path from "path";
 import fs from "fs";
-import prisma from "@/app/lib/prisma";
+import prisma from "@/libs/prisma";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
     try {

@@ -1,6 +1,6 @@
-import prisma from "@/app/lib/prisma";
-import ClusterLanding from "./components/cluster_landing";
-import ErrorPage from "@/app/components/error";
+import prisma from "@/libs/prisma";
+import ErrorPage from "@/components/error";
+import ClusterLanding from "@/components/clusters/cluster_landing";
 
 export default async function Cluster() {
     try {

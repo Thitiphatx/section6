@@ -1,4 +1,5 @@
-import DashboardSidebar from "./components/dashboard_sidebar";
+import DashboardSidebar from "@/components/dashboard/sidebar";
+
 
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 

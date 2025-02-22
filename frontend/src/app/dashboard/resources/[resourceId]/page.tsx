@@ -1,6 +1,6 @@
-import prisma from "@/app/lib/prisma"
-import ResourceDashboard from "../components/resource_dashboard";
-import ErrorPage from "@/app/components/error";
+import prisma from "@/libs/prisma"
+import ErrorPage from "@/components/error";
+import ResourceDashboard from "@/components/resources/resource_dashboard";
 
 interface ResourcePageProps {
 	params: Promise<{ resourceId: string }>; // params is now a Promise

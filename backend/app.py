@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+from database import db
 
 from io import BytesIO
-import os
 from PIL import Image
 import numpy as np
 from segmentation import segment_start, segment_model_list, segment_progress
@@ -14,13 +13,9 @@ from config import RESOURCE_DIR
 app = Flask(__name__)
 CORS(app)
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://admin:admin@localhost:5432/section6")
-DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://")
-
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-
+@app.route("/")
+def test2():
+    return "<div>h2</div>"
 
 @app.route('/api/segmentation/list', methods=['GET'])
 def list_model():
@@ -41,7 +36,12 @@ def process(resourceId):
 
 @app.route('/test', methods=['GET'])
 def test():
-    print(db.engine.connect())
+    try:
+        db.session.execute('SELECT 1')
+        print("Connected")
+    except Exception as e:
+        print(str(e))
+    print()
 
 # @app.route('/get_segment', methods=['GET'])
 # def get_segment():

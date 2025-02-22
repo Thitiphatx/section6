@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signUpSchema } from "@/app/lib/zod"
+import { signUpSchema } from "@/libs/zod/zod"
 import { z } from "zod"
 import { handleSignup } from "../utils/actions"
 
