@@ -2,8 +2,7 @@
 import prisma from "@/libs/prisma";
 import fs from 'fs/promises';
 import path from 'path';
-
-export async function uploadImage(resourceId: number, formData: FormData) {
+export async function uploadImage(resourceId: string, formData: FormData) {
     const resourcePath = path.join("resources", `${resourceId}`);
     const uploadFolder = path.join(process.cwd(), "..", resourcePath);
 

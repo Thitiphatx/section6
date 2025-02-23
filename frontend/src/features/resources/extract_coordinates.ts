@@ -78,7 +78,6 @@ export const extract_coordinates = async (resource: ResourceWithImage) => {
         }))
 
         if (clusterImages.length > 0) {
-            console.log("create image")
             // put images to version
             await prisma.clusterImages.createMany({ data: clusterImages })
         }

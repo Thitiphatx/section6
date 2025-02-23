@@ -63,7 +63,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
                 }
             })
         }
-
+        
         return NextResponse.json({
             Message: "Files uploaded successfully",
             files: uploadedFiles,

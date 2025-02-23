@@ -9,6 +9,7 @@ import ResourceModelPanel from "./resource_model_panel"
 import { ResourceContext } from "@/contexts/resources/context"
 import { ResourceWithImage } from "@/types/resources"
 import ResourceCluster from "./resource_cluster"
+import ResourceImageUp from "./resource_image_up"
 
 interface props {
     data: ResourceWithImage
@@ -24,6 +25,7 @@ export default function ResourceDashboard({ data }: props) {
                 </TabPanel>
                 <TabPanel header="image">
                     <ResourceImageUpload />
+                    <ResourceImageUp />
                     <ResourceImageTable />
                 </TabPanel>
                 <TabPanel header="segmentation">

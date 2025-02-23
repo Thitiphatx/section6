@@ -1,5 +1,3 @@
-"use client"
-
 import ResourceImportForm from "@/components/import/ResourceImportForm"
 
 

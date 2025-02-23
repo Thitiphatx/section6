@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-from database import db
 
 from io import BytesIO
 from PIL import Image
 import numpy as np
-from segmentation import segment_start, segment_model_list, segment_progress
+from segmentation import segment_start, segment_model_list, read_result
 
 from config import RESOURCE_DIR
 
@@ -21,27 +20,16 @@ def test2():
 def list_model():
     return segment_model_list()
 
-@app.route('/api/segmentation/start', methods=['POST'])
+@app.route('/api/segmentation/start', methods=['GET'])
 def segmentation_start():
-    body_json = request.get_json()
-    resourceId = body_json["resourceId"]
-    modelId = body_json["modelId"]
-    segment_start(resourceId, modelId)
+    modelId = request.args.get('modelId')
+    resourceId = request.args.get('resourceId')
+    return segment_start(resourceId, modelId)
 
-    return jsonify({'result': "started", "resourceId": resourceId})
-
-@app.route('/api/segmentation/progress/<resourceId>', methods=['GET'])
-def process(resourceId):
-    return segment_progress(resourceId)
-
-@app.route('/test', methods=['GET'])
-def test():
-    try:
-        db.session.execute('SELECT 1')
-        print("Connected")
-    except Exception as e:
-        print(str(e))
-    print()
+@app.route('/api/segmentation/test', methods=['GET'])
+def segmentation_test():
+    resourceId = request.args.get('resourceId')
+    return read_result(resourceId)
 
 # @app.route('/get_segment', methods=['GET'])
 # def get_segment():

@@ -27,28 +27,20 @@ model Resources {
 }
 
 model Images {
-  id                     String               @id @default(uuid())
-  resource_id            String
-  resource               Resources            @relation(fields: [resource_id], references: [id])
-  segmentation           SegmentationResults? @relation(fields: [segmentation_ResultsId], references: [id])
-  latitude               Float
-  longitude              Float
-  timestamp              DateTime
-  file_path              String?
-  file_name              String
-  status                 ImageStatus          @default(PENDING)
-  segmentation_ResultsId String?              @unique // Ensures one-to-one relationship
-  ClusterImages          ClusterImages[]
+  id             String          @id @default(uuid())
+  resource_id    String
+  resource       Resources       @relation(fields: [resource_id], references: [id])
+  latitude       Float
+  longitude      Float
+  timestamp      DateTime
+  file_path      String?
+  file_name      String
+  processed_path String?
+  detected_object Json?
+  ClusterImages  ClusterImages[]
+  status         ImageStatus     @default(PENDING)
 
   @@unique([resource_id, file_name]) // Composite unique constraint
-}
-
-model SegmentationResults {
-  id          String   @id @default(uuid())
-  result_path String
-  classes     Json
-  created_at  DateTime @default(now()) @db.Date
-  Images      Images?
 }
 
 model Clusters {

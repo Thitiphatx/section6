@@ -11,11 +11,14 @@ import { ProgressBar } from "primereact/progressbar";
 import React from "react";
 import { useResourceContext } from "@/contexts/resources/context";
 import { ResourceWithImage } from "@/types/resources";
+import prisma from "@/libs/prisma";
+import { saveSegmentedImage } from "@/features/resources/save_segment_result";
 
 export default function ResourceModelPanel() {
     const data: ResourceWithImage = useResourceContext();
     const [modelList, setModelList] = useState<string[]>([]);
-    const [progress, setProgress] = useState(null);
+    const [progress, setProgress] = useState(0);
+    const [currentImage, setCurrentImage] = useState('');
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const toast = useRef<Toast>(null);
 
@@ -46,41 +49,38 @@ export default function ResourceModelPanel() {
             toast.current?.show({ severity: "error", summary: "Error", detail: "Please select a model", life: 3000 });
             return;
         }
-
+    
         try {
-            const response = await fetch("http://localhost:5000/api/segmentation/start",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        resourceId: data.id,
-                        modelId: selectedModel
-                    })
-                }
-            );
-            const result = await response.json();
+            const eventSource = new EventSource(`http://localhost:5000/api/segmentation/start?modelId=${selectedModel}&resourceId=${data.id}`);
+            
+            eventSource.onmessage = async (event) => {
+                const result = JSON.parse(event.data);
+                setProgress(result.progress);
+                setCurrentImage(result.current_image);
 
-            const eventSource = new EventSource(`http://localhost:5000/api/segmentation/progress/${data.id}`);
-            eventSource.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                setProgress(data);
+                // Update segmented result to database
+                await saveSegmentedImage(data.id, result.current_image, result.unique_class);
 
-                if (data.status === "done") {
+                // Check for the completion of the process
+                if (result.progress === 100) {
                     eventSource.close();
                 }
-            }
-
+            };
+    
+            eventSource.onerror = function () {
+                console.log("error with SSE connection");
+            };
+    
         } catch (error) {
             console.log(error);
         }
     };
+    
 
     const progressTemplate = (value: any) => {
         return (
             <React.Fragment>
-                {value}/{progress.total}
+                {progress}/{100}%
             </React.Fragment>
         )
     }
@@ -110,8 +110,8 @@ export default function ResourceModelPanel() {
             )}
             {progress && (
                 <div> 
-                    <p>Processing Image {progress.index} of {progress.total}</p>
-                    {progress.status === "done" && <p>Segmentation Complete!</p>}
+                    <ProgressBar value={progress} displayValueTemplate={progressTemplate}/>
+                    {progress !== 100 && <small>{currentImage}</small>}
                 </div>
             )}
         </Card>
