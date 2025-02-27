@@ -1,3 +1,4 @@
 /resources/*
-/segmentation_results/*
+/segmentation/*
 frontend/public/*
+backend/*.mp4

@@ -20,25 +20,26 @@ model Users {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Resources {
-  id         String   @id @default(uuid())
+  id         String         @id @default(uuid())
   name       String
-  created_at DateTime @default(now()) @db.Date
+  created_at DateTime       @default(now()) @db.Date
   Images     Images[]
+  status     ResourceStatus @default(PENDING)
 }
 
 model Images {
-  id             String          @id @default(uuid())
-  resource_id    String
-  resource       Resources       @relation(fields: [resource_id], references: [id])
-  latitude       Float
-  longitude      Float
-  timestamp      DateTime
-  file_path      String?
-  file_name      String
-  processed_path String?
+  id              String          @id @default(uuid())
+  resource_id     String
+  resource        Resources       @relation(fields: [resource_id], references: [id])
+  latitude        Float
+  longitude       Float
+  timestamp       DateTime
+  file_path       String?
+  file_name       String
+  processed_path  String?
   detected_object Json?
-  ClusterImages  ClusterImages[]
-  status         ImageStatus     @default(PENDING)
+  ClusterImages   ClusterImages[]
+  status          ImageStatus     @default(PENDING)
 
   @@unique([resource_id, file_name]) // Composite unique constraint
 }
@@ -88,6 +89,12 @@ enum ImageStatus {
   AVAILABLE // File is available
   PROCESSING // Undergoing segmentation
   FAILED // Processing failed
+}
+
+enum ResourceStatus {
+  DONE // Clustered resource
+  READY // All images has uploaded
+  PENDING // Image not upload yet
 }
 
 enum ClusterVersionStatus {

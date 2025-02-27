@@ -14,8 +14,8 @@ export default function Navbar() {
 
     const items = [
         {
-            label: 'Home',
-            url: '/'
+            label: 'Section6',
+            url: '/',
         },
         {
             label: 'Features'
@@ -78,7 +78,7 @@ export default function Navbar() {
             ) : (
                 <>
                     <Menu model={profileItems} ref={menuRight} popup popupAlignment="right" />
-                    <Button label={session.user.name ?? ""} onClick={(event) => menuRight?.current?.toggle(event)} />
+                    <Button label={session.user.name ?? ""} onClick={(event) => menuRight?.current?.toggle(event)} outlined rounded/>
                 </>
             )}
         </div>

@@ -8,11 +8,6 @@ export default function DashboardSidebar() {
 			label: "data",
 			items: [
 				{
-					label: 'import',
-					icon: 'pi pi-file-import',
-					url: '/dashboard/import'
-				},
-				{
 					label: 'resource',
 					icon: 'pi pi-folder',
 					url: '/dashboard/resources'
@@ -43,6 +38,6 @@ export default function DashboardSidebar() {
         }
 	]
     return (
-        <Menu  model={navItems} />
+        <Menu className="min-h-full" model={navItems} />
     );
 }

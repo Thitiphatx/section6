@@ -31,7 +31,7 @@ export default function RootLayout({
 			<body className={`${comfortaa.className}  antialiased min-h-screen flex flex-col bg-zinc-100`}>
 				<SessionProvider>
 					<PrimeReactProvider value={value}>
-						<header className="absolute w-full">
+						<header className="w-full">
 							<Navbar />
 						</header>
 						<main className="flex-1">

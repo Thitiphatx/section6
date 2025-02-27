@@ -2,7 +2,6 @@
 import { createContext, useContext } from "react";
 import { ResourceWithImage } from "../../types/resources";
 
-
 export const ResourceContext = createContext<ResourceWithImage | undefined>(undefined);
 
 export function useResourceContext(): ResourceWithImage {

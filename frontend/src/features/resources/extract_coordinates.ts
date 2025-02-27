@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/libs/prisma";
-import { ResourceWithImage } from "../../../../types/resources"
+import { ResourceWithImage } from "@/types/resources";
 import { Clusters, Images } from "@prisma/client";
 
 // https://nominatim.openstreetmap.org/reverse?lat=51.5074&lon=-0.1278&format=json
@@ -42,15 +42,20 @@ interface ImageWithAddress {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+let progress = 0;
+
 export const extract_coordinates = async (resource: ResourceWithImage) => {
+    progress = 0;
     const uniqueRoads = new Set<string>();
     const grouped: Record<string, ImageWithAddress[]> = {};
-
+    const progressStep = Math.floor(100/resource.Images.length);
+    console.log("start");
     // 1. Convert lat & lon to address then group the road
     for (const image of resource.Images) {
+        console.log(image)
         const result: AddressData = await reverse_geocode(image.latitude, image.longitude);
         if (!result) continue;
-
+        progress += progressStep;
         if (uniqueRoads.has(result.address.road)) {
             if (!grouped[result.address.road]) {
                 grouped[result.address.road] = [];
@@ -64,9 +69,10 @@ export const extract_coordinates = async (resource: ResourceWithImage) => {
             address: result.display_name,
             road: result.address.road
         });
+
         await delay(1000); // prevent from api blocking
     }
-
+    console.log("finish step 1")
     // 2. put image into new version
     for (const road of uniqueRoads) {
         const cluster = await getCluster(road, grouped[road][0].address);
@@ -82,10 +88,11 @@ export const extract_coordinates = async (resource: ResourceWithImage) => {
             await prisma.clusterImages.createMany({ data: clusterImages })
         }
     }
+    console.log("finish step 2")
 }
 
-
 const reverse_geocode = async (lat: number, lon: number) => {
+    console.log("reversing")
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
         const data = await response.json();
@@ -143,3 +150,6 @@ const getClusterVersion = async (clusterId: string) => {
     return newVersion;
 }
 
+export const getExtractProgress = async ()=> {
+    return progress;
+}

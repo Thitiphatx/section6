@@ -17,7 +17,7 @@ import { saveSegmentedImage } from "@/features/resources/save_segment_result";
 export default function ResourceModelPanel() {
     const data: ResourceWithImage = useResourceContext();
     const [modelList, setModelList] = useState<string[]>([]);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState(null);
     const [currentImage, setCurrentImage] = useState('');
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const toast = useRef<Toast>(null);
@@ -28,7 +28,7 @@ export default function ResourceModelPanel() {
         const fetchModels = async () => {
             try {
                 const response = await fetch("http://localhost:5000/api/segmentation/list");
-                if (!response.ok) throw new Error("Failed to fetch models");
+                if (!response.ok) return null;
 
                 const result = await response.json();
                 setModelList(result.models);

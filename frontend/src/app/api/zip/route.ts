@@ -33,12 +33,22 @@ export async function POST(req: Request) {
 		// Append chunk to the correct file
 		const writeStream = createWriteStream(filePath, { flags: "a" });
 		const stream = chunk.stream();
+		const reader = stream.getReader();
 
-		for await (const data of stream) {
-			writeStream.write(data);
+		try {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break; // Stop when stream ends
+
+				writeStream.write(value); // Write chunk to file
+			}
+		} catch (error) {
+			console.error("Error writing to file:", error);
+		} finally {
+			reader.releaseLock();
+			writeStream.end(); // Close the file stream properly
 		}
-
-		writeStream.end();
+		
 		await prisma.images.update({
 			where: {
 				resource_id_file_name: {
