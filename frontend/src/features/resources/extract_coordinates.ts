@@ -40,22 +40,28 @@ interface ImageWithAddress {
     road: string;
 }
 
+type ProgressStore = {
+    [processId: string]: number;
+}
+
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-let progress = 0;
+let progress: ProgressStore = {};
 
 export const extract_coordinates = async (resource: ResourceWithImage) => {
-    progress = 0;
+    progress[resource.id] = 0;
     const uniqueRoads = new Set<string>();
     const grouped: Record<string, ImageWithAddress[]> = {};
-    const progressStep = Math.floor(100/resource.Images.length);
     console.log("start");
-    // 1. Convert lat & lon to address then group the road
+
+    // 1. Convert lat & lon to address then group by road
     for (const image of resource.Images) {
-        console.log(image)
+        console.log(image);
         const result: AddressData = await reverse_geocode(image.latitude, image.longitude);
         if (!result) continue;
-        progress += progressStep;
+        
+        progress[resource.id] += 1;
+
         if (uniqueRoads.has(result.address.road)) {
             if (!grouped[result.address.road]) {
                 grouped[result.address.road] = [];
@@ -64,32 +70,46 @@ export const extract_coordinates = async (resource: ResourceWithImage) => {
             uniqueRoads.add(result.address.road);
             grouped[result.address.road] = [];
         }
+
         grouped[result.address.road].push({
             image: image,
             address: result.display_name,
             road: result.address.road
         });
 
-        await delay(1000); // prevent from api blocking
+        await delay(1000); // Prevent API blocking
     }
-    console.log("finish step 1")
-    // 2. put image into new version
+
+    console.log("finish step 1");
+
+    // 2. Put images into new cluster version
     for (const road of uniqueRoads) {
         const cluster = await getCluster(road, grouped[road][0].address);
         const version = await getClusterVersion(cluster.id);
 
+        // Update images to associate them with the correct cluster version
         const clusterImages = grouped[road].map(images => ({
-            cluster_version_id: version.id,
+            version_id: version.id,  // Set the cluster version for the image
             image_id: images.image.id
-        }))
+        }));
 
         if (clusterImages.length > 0) {
-            // put images to version
-            await prisma.clusterImages.createMany({ data: clusterImages })
+            // Update images with the new cluster version ID
+            await prisma.images.updateMany({
+                where: {
+                    id: {
+                        in: clusterImages.map(ci => ci.image_id),
+                    },
+                },
+                data: {
+                    version_id: version.id,  // Update the version_id field in the Images table
+                },
+            });
         }
     }
-    console.log("finish step 2")
-}
+
+    console.log("finish step 2");
+};
 
 const reverse_geocode = async (lat: number, lon: number) => {
     console.log("reversing")
@@ -150,6 +170,6 @@ const getClusterVersion = async (clusterId: string) => {
     return newVersion;
 }
 
-export const getExtractProgress = async ()=> {
-    return progress;
+export const getExtractProgress = async (processId: string)=> {
+    return progress[processId];
 }

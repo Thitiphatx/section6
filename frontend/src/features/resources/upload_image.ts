@@ -1,5 +1,4 @@
 "use server";
-import prisma from "@/libs/prisma";
 import fs from 'fs/promises';
 import path from 'path';
 export async function uploadImage(resourceId: string, formData: FormData) {
@@ -19,19 +18,6 @@ export async function uploadImage(resourceId: string, formData: FormData) {
 
                 // Write the file to the directory
                 await fs.writeFile(savePath, buffer);
-
-                // Write the file path to the database
-                await prisma.images.update({
-                    where: {
-                        resource_id_file_name: {
-                            resource_id: resourceId,
-                            file_name: filename,
-                        },
-                    },
-                    data: {
-                        file_path: resourcePath
-                    }
-                })
             }
         }
     } catch (e) {

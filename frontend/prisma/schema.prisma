@@ -9,13 +9,14 @@ datasource db {
 }
 
 model Users {
-  id         String     @id @default(uuid())
-  name       String
-  email      String     @unique
-  password   String
-  role       UserRole   @default(USER)
-  created_at DateTime   @default(now()) @db.Date
-  status     UserStatus @default(ACTIVE)
+  id          String        @id @default(uuid())
+  name        String
+  email       String        @unique
+  password    String
+  role        UserRole      @default(USER)
+  created_at  DateTime      @default(now()) @db.Date
+  status      UserStatus    @default(ACTIVE)
+  Transaction Transaction[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -28,18 +29,17 @@ model Resources {
 }
 
 model Images {
-  id              String          @id @default(uuid())
-  resource_id     String
-  resource        Resources       @relation(fields: [resource_id], references: [id])
-  latitude        Float
-  longitude       Float
-  timestamp       DateTime
-  file_path       String?
-  file_name       String
-  processed_path  String?
-  detected_object Json?
-  ClusterImages   ClusterImages[]
-  status          ImageStatus     @default(PENDING)
+  id          String           @id @default(uuid())
+  resource_id String
+  resource    Resources        @relation(fields: [resource_id], references: [id])
+  version_id  String?
+  version     ClusterVersions? @relation(fields: [version_id], references: [id])
+  latitude    Float
+  longitude   Float
+  timestamp   DateTime
+  file_name   String
+  classes     Json?
+  status      ImageStatus      @default(PENDING)
 
   @@unique([resource_id, file_name]) // Composite unique constraint
 }
@@ -51,27 +51,32 @@ model Clusters {
   road            String
   created_at      DateTime          @default(now()) @db.Date
   ClusterVersions ClusterVersions[]
+  Transaction     Transaction[]
 }
 
 model ClusterVersions {
-  id            String               @id @default(uuid())
-  price         Float
-  version       Int
-  created_at    DateTime             @default(now()) @db.Date
-  status        ClusterVersionStatus @default(DEACTIVE)
-  cluster_id    String
-  cluster       Clusters             @relation(fields: [cluster_id], references: [id], onDelete: Cascade)
-  ClusterImages ClusterImages[]
+  id          String               @id @default(uuid())
+  price       Float
+  version     Int
+  created_at  DateTime             @default(now()) @db.Date
+  status      ClusterVersionStatus @default(DEACTIVE)
+  cluster_id  String
+  cluster     Clusters             @relation(fields: [cluster_id], references: [id], onDelete: Cascade)
+  Images      Images[]
+  Transaction Transaction[]
 }
 
-model ClusterImages {
-  id                 String          @id @default(uuid())
-  cluster_version_id String
-  image_id           String
-  cluster            ClusterVersions @relation(fields: [cluster_version_id], references: [id], onDelete: Cascade)
-  image              Images          @relation(fields: [image_id], references: [id], onDelete: Cascade)
-
-  @@unique([cluster_version_id, image_id]) // Prevent duplicate image assignments
+model Transaction {
+  id             String            @id @default(uuid())
+  user_id        String
+  user           Users             @relation(fields: [user_id], references: [id])
+  cluster_id     String
+  cluster        Clusters          @relation(fields: [cluster_id], references: [id])
+  version_id     String
+  version        ClusterVersions   @relation(fields: [version_id], references: [id])
+  class_quantity Int
+  purchase_date  DateTime          @default(now())
+  status         TransactionStatus
 }
 
 enum UserStatus {
@@ -100,4 +105,10 @@ enum ResourceStatus {
 enum ClusterVersionStatus {
   ACTIVE // listed on selling
   DEACTIVE // unlisted
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

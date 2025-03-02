@@ -4,11 +4,12 @@ import prisma from "@/libs/prisma"
 
 export async function DeleteResource(id: string) {
     try {
-        await prisma.resources.update({
-            where: { id: id },
-            data: {
 
-            }
+        // 1. delete image file call api python
+
+        // 2. delete resource data from database
+        await prisma.resources.delete({
+            where: { id }
         })
     } catch (error) {
         console.log(error);

@@ -17,7 +17,7 @@ export async function create_image_data(resource_id: string, image_data: ImageDa
                 file_name: image.file_name,
                 latitude: image.latitude,
                 longitude: image.longitude,
-                timestamp: image.timestamp
+                timestamp: image.timestamp,
             }))
         })
     } catch (error) {

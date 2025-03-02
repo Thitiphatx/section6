@@ -2,6 +2,7 @@
 
 import { useResourceContext } from "@/contexts/resources/context"
 import { DeleteResource } from "@/features/resources/delete_resource"
+import { useRouter } from "next/navigation"
 import { Button } from "primereact/button"
 import { Card } from "primereact/card"
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog"
@@ -9,13 +10,15 @@ import { Toast } from "primereact/toast"
 import { useRef } from "react"
 
 export default function ResourceDeletePanel() {
+    const router = useRouter();
     const data = useResourceContext();
     const toast = useRef<Toast>(null);
     const accept = async () => {
-        
+
         try {
             await DeleteResource(data.id);
             toast.current?.show({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+            router.push("/dashboard/resources")
         } catch (error) {
 
         }

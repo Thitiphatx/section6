@@ -20,16 +20,21 @@ export default function ResourceDashboard({ data }: props) {
         <ResourceContext.Provider value={data}>
             <TabView>
                 <TabPanel header="settings">
-                    <ResourceInfoPanel />
-                    <ResourceDeletePanel />
+                    <div className="space-y-5">
+                        <ResourceInfoPanel />
+                        <ResourceDeletePanel />
+                    </div>
                 </TabPanel>
                 <TabPanel header="image">
-                    <ResourceImageUpload />
-                    <ResourceImageTable />
+                    <div className="space-y-5">
+                        <ResourceImageUpload />
+                        <ResourceImageTable />
+                    </div>
                 </TabPanel>
                 <TabPanel header="segmentation">
-                    <ResourceModelPanel />
-                    <ResourceCluster />
+                    <div className="space-y-5">
+                        <ResourceCluster />
+                    </div>
                 </TabPanel>
             </TabView>
         </ResourceContext.Provider>

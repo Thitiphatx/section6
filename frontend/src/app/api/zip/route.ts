@@ -48,7 +48,6 @@ export async function POST(req: Request) {
 			reader.releaseLock();
 			writeStream.end(); // Close the file stream properly
 		}
-		
 		await prisma.images.update({
 			where: {
 				resource_id_file_name: {
@@ -58,9 +57,9 @@ export async function POST(req: Request) {
 			},
 			data: {
 				status: "AVAILABLE", // Mark as available once uploaded
-				file_path: `/resources/${resourceId}/${fileName}`, // Store the file path in the database
 			},
 		});
+
 		if (index + 1 === totalChunks) {
 			return NextResponse.json({ message: `Upload complete for ${fileName}`, filePath });
 		}

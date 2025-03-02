@@ -10,9 +10,6 @@ export interface ImportResource {
 }
 
 export const import_resource = async (resource: ImportResource)=> {
-    // let timestamp = resource[resource.length - 1].time;
-    // var date = new Date(parseFloat(timestamp) * 1000);
-    // console.log(date)
     try {
         const new_resource = await prisma.resources.create({
             data: {
@@ -22,7 +19,7 @@ export const import_resource = async (resource: ImportResource)=> {
         })
 
         await create_image_data(new_resource.id, resource.Images);
-        
+        return new_resource.id
     } catch (error) {
         throw new Error("Database is offline");
     }
