@@ -1,11 +1,14 @@
 import { Prisma } from '@prisma/client';
 
-export type ClusterWithVersionImage = Prisma.ClustersGetPayload<{
+export type ClusterWithVersion = Prisma.ClustersGetPayload<{
     include: {
-        ClusterVersions: {
-            include: {
-                ClusterImages: true;
-            };
-        };
+        ClusterVersions: true
     };
 }>;
+
+
+export type ClustersContextType = {
+    clusters: Clusters[];
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+}

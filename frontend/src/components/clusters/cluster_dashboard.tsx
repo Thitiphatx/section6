@@ -1,24 +1,46 @@
 "use client"
 
-import { Card } from "primereact/card"
-import { ClusterWithVersionImage } from "../../types/clusters"
-import Player2 from "@/app/player/[clusterId]/components/player"
-import { ClusterContext } from "@/contexts/clusters/clusterContext"
-import ClusterForm from "./cluster_form"
+import { Clusters } from "@prisma/client"
+import ClusterGrid from "./cluster_grid";
+import ClusterSearch from "./cluster_search";
+import { ClustersProvider } from "@/contexts/clusters/clustersContext";
+import { getClusters } from "@/features/cluster/search";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
+export default function ClusterDashboard({ data }: { data: Clusters[] }) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
-export default function ClusterDashboard({ data }: { data: ClusterWithVersionImage }) {
+    const [clusters, setClusters] = useState<Clusters[]>(data);
+    const [loading, setLoading] = useState(false);
+
+    // Get query from URL on load
+    useEffect(() => {
+        const query = searchParams.get("s");
+        if (query) {
+            handleSearch(query);
+        }
+    }, []);
+
+    // Handle search and update URL
+    async function handleSearch(query: string) {
+        setLoading(true);
+
+        // Update the URL (without reloading the page)
+        router.push(`?s=${query}`, { scroll: false });
+
+        // Fetch data from the server
+        const result = await getClusters(query);
+        setClusters(result);
+
+        setLoading(false);
+    }
+    
     return (
-        <div>
-            <ClusterContext.Provider value={data}>
-                <Card title="test">
-                    <div className="grid grid-cols-2 gap-5">
-                        <Player2 />
-                        <ClusterForm />
-                    </div>
-
-                </Card>
-            </ClusterContext.Provider>
-        </div>
+        <ClustersProvider data={data}>
+            <ClusterSearch onSearch={handleSearch} defaultQuery={searchParams.get("s") || ""}/>
+            <ClusterGrid clusters={clusters} isLoading={loading}/>
+        </ClustersProvider>
     )
 }

@@ -36,7 +36,7 @@ export default function Player2() {
   if (!isClient || !projection || !controlBar) return null; // Ensure everything is loaded before rendering
 
   return (
-    <div className="w-full h-[500px]">
+    <div className="w-full">
       <View360 className="is-16by9" projection={projection} autoplay plugins={[controlBar]}/>
     </div>
   );

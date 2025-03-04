@@ -8,13 +8,13 @@ import Head from 'next/head';
 
 export default function ErrorPage({ message = "Data not found", title = "Error", suggestion = "Please try again later" }) {
   return (
-    <div className="flex justify-content-center align-items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Head>
         <title>{title} | Your Application</title>
       </Head>
 
       <Card className="shadow-4 w-full max-w-lg">
-        <div className="flex flex-column align-items-center text-center p-4">
+        <div className="flex flex-col items-center text-center p-4">
           <div className="my-5">
             <i className="pi pi-exclamation-circle text-red-500" style={{ fontSize: '5rem' }}></i>
           </div>
