@@ -1,9 +1,9 @@
 "use client"
 
+import { ClusterWithVersion } from "@/types/clusters";
 import { createContext, useContext } from "react";
-import { ClusterWithVersionImage } from "../../../../../types/clusters";
 
-export const ClusterContext = createContext<ClusterWithVersionImage | undefined>(undefined); 
+export const ClusterContext = createContext<ClusterWithVersion | undefined>(undefined); 
 
 export const useClusterContext = ()=> {
     const data = useContext(ClusterContext);

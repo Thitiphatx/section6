@@ -12,3 +12,9 @@ export type ClustersContextType = {
     searchQuery: string;
     setSearchQuery: (query: string) => void;
 }
+
+export type ClusterWithImage = Prisma.ClusterVersionsGetPayload<{
+    include: {
+        Images: true
+    };
+}>;

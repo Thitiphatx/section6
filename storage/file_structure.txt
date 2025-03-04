@@ -1,0 +1,9 @@
+- storage
+    - resources
+        - [resourceId]
+            - clusters
+                - [clusterId]
+                    - images
+                        - image###.jpg
+                    - segments
+                        - image###.npz

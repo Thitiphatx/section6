@@ -1,14 +1,14 @@
 "use client"
 
-import ResourceImageTable from "./resource_image_table"
-import ResourceImageUpload from "./resource_image_upload"
+import ResourceImageTable from "../clusters/image_table"
+import ResourceImageUpload from "../clusters/image_upload_form"
 import ResourceInfoPanel from "./resource_info_panel"
 import { TabView, TabPanel } from "primereact/tabview"
 import ResourceDeletePanel from "./resource_delete_panel"
 import ResourceModelPanel from "./resource_model_panel"
 import { ResourceContext } from "@/contexts/resources/context"
 import { ResourceWithImage } from "@/types/resources"
-import ResourceCluster from "./resource_cluster"
+import ResourceCluster from "../clusters/resource_cluster"
 
 interface props {
     data: ResourceWithImage
@@ -25,13 +25,7 @@ export default function ResourceDashboard({ data }: props) {
                         <ResourceDeletePanel />
                     </div>
                 </TabPanel>
-                <TabPanel header="image">
-                    <div className="space-y-5">
-                        <ResourceImageUpload />
-                        <ResourceImageTable />
-                    </div>
-                </TabPanel>
-                <TabPanel header="segmentation">
+                <TabPanel header="cluster extraction">
                     <div className="space-y-5">
                         <ResourceCluster />
                     </div>

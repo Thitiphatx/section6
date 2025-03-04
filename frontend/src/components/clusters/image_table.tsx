@@ -6,11 +6,11 @@ import { useState } from "react";
 import { Images } from "@prisma/client";
 import { Card } from "primereact/card";
 import { Tag } from "primereact/tag";
-import { useResourceContext } from "@/contexts/resources/context";
+import { useVersionContext } from "@/contexts/clusters/versionContext";
 
-export default function ResourceImageTable() {
-    const data = useResourceContext();
-    const [images] = useState<Images[]>(data.Images);
+export default function ImageTable() {
+    const context = useVersionContext();
+    const [images] = useState<Images[]>(context.Images);
     
     const statusBodyTemplate = (image: Images) => {
         let severity: null | "success" | "warning" | "secondary" | "info" | "danger" | "contrast";
@@ -18,14 +18,8 @@ export default function ResourceImageTable() {
             case "AVAILABLE":
                 severity = "success";
                 break;
-            case "FAILED":
-                severity = "danger";
-                break;
             case "PENDING":
                 severity = "warning";
-                break;
-            case "PROCESSING":
-                severity = "info";
                 break;
         }
         return <Tag value={image.status} severity={severity}></Tag>;

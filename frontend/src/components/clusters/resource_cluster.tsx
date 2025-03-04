@@ -1,6 +1,5 @@
 "use client"
 import { useResourceContext } from "@/contexts/resources/context";
-import { extract_coordinates, getExtractProgress } from "@/features/resources/extract_coordinates";
 import { resourceStatusColor } from "@/features/resources/resource_status_color";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";

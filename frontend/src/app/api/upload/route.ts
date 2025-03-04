@@ -1,76 +1,77 @@
-import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises"
+import { NextResponse } from "next/server";
+import { createWriteStream } from "fs";
 import path from "path";
-import fs from "fs";
 import prisma from "@/libs/prisma";
+import { path_verify } from "@/features/path_verify";
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
-    try {
-        const formData = await req.formData();
-        const files = formData.getAll("files") as File[];
-        console.log(files)
-        const resourceId = formData.get("resourceId") as string;
-        // check is id valid
-        try {
-            const resource = await prisma.resources.findFirst({
-                where: { id: resourceId }
-            })
-            if (!resource) return NextResponse.json({ Message: "Failed", status: 500 });
-        } catch (error) {
-            return NextResponse.json({ Message: "Cannot connect the database", status: 500 });
-        }
+const UPLOAD_DIR = path.join(process.cwd(), "../storage/resources");
 
-        if (!files || files.length === 0) {
-            return NextResponse.json({ message: "No files uploaded", status: 400 });
-        }
+// Ensure upload directory exists
+await path_verify(UPLOAD_DIR);
 
-        const resourceDir = path.join(process.cwd(), "../resources");
-        if (!fs.existsSync(resourceDir)) {
-            await mkdir(resourceDir);
-        }
+export async function POST(req: Request) {
+	try {
+		const formData = await req.formData();
 
-        const uploadDir = path.join(resourceDir, resourceId);
-        if (!fs.existsSync(uploadDir)) {
-            await mkdir(uploadDir);
-        }
+		// data streaming
+		const chunk = formData.get("chunk") as File;
+		const index = Number(formData.get("index"));
+		const totalChunks = Number(formData.get("totalChunks"));
+		
+		if (!chunk) {
+			return NextResponse.json({ error: "No chunk provided" }, { status: 400 });
+		}
 
-        const uploadedFiles: string[] = [];
+		// data information
+		const fileName = formData.get("fileName") as string;
+		const resourceId = formData.get("resourceId") as string;
+		const clusterId = formData.get("clusterId") as string;
+		if (!fileName || !resourceId || !clusterId) {
+			return NextResponse.json({ error: "No data information provided" }, { status: 400 });
+		}
 
-        for (const file of files) {
-            const validImage = await prisma.images.findFirst({
-                where: {
-                    file_name: file.name,
-                    resource_id: resourceId
-                }
-            })
-            if (!validImage) continue;
-            const buffer = Buffer.from(await file.arrayBuffer());
-            const filePath = path.join(uploadDir, file.name);
-            
-            await writeFile(filePath, buffer);
-            uploadedFiles.push(filePath);
+		// Construct directory path
+        const targetPath = path.join(UPLOAD_DIR, resourceId, "clusters", clusterId, "images");
+        await path_verify(targetPath);
+        const filePath = path.join(targetPath, fileName);
 
-            await prisma.images.update({
-                where: {
-                    resource_id_file_name: {
-                        file_name: file.name,
-                        resource_id: resourceId
-                    }
-                },
-                data: {
-                    status: "AVAILABLE",
-                    file_path: `/resources/${resourceId}/${file.name}`
-                }
-            })
-        }
-        
-        return NextResponse.json({
-            Message: "Files uploaded successfully",
-            files: uploadedFiles,
-            status: 200,
-        });
-    } catch (err) {
-        console.error("Error during file upload:", err);
-        return NextResponse.json({ Message: "Failed", status: 500 });
-    }
-};
+		// Append chunk to the correct file
+		const writeStream = createWriteStream(filePath, { flags: "a" });
+		const stream = chunk.stream();
+		const reader = stream.getReader();
+
+		try {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break; // Stop when stream ends
+
+				writeStream.write(value); // Write chunk to file
+			}
+		} catch (error) {
+			console.error("Error writing to file:", error);
+		} finally {
+			reader.releaseLock();
+			writeStream.end(); // Close the file stream properly
+		}
+		await prisma.images.update({
+			where: {
+				resource_id_file_name: {
+					file_name: fileName,
+					resource_id: resourceId,
+				},
+			},
+			data: {
+				status: "AVAILABLE", // Mark as available once uploaded
+			},
+		});
+
+		if (index + 1 === totalChunks) {
+			return NextResponse.json({ message: `Upload complete for ${fileName}`, filePath });
+		}
+
+		return NextResponse.json({ message: `Chunk ${index + 1} received for ${fileName}` });
+	} catch (error) {
+		console.error("Upload error:", error);
+		return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+	}
+}

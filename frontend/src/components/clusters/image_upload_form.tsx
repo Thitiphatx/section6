@@ -1,19 +1,19 @@
 "use client";
-import { useResourceContext } from "@/contexts/resources/context";
+
 import { resizeImage } from "@/features/resources/resize_image";
 import { resource_status_validation } from "@/features/resources/resource_status_validation";
-import { useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { ProgressBar } from "primereact/progressbar";
 import { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
+import { useVersionContext } from "@/contexts/clusters/versionContext";
 
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB per chunk
 
-export default function ResourceImageUpload() {
-    const data = useResourceContext();
-    const router = useRouter();
+export default function ImageUploadForm() {
+    const data = useVersionContext();
+    // const router = useRouter();
     const [files, setFiles] = useState<File[]>([]);
     const [progress, setProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
@@ -59,13 +59,16 @@ export default function ResourceImageUpload() {
         formData.append("index", index.toString());
         formData.append("totalChunks", totalChunks.toString());
         formData.append("fileName", file.name);
-        formData.append("resourceId", data.id);
+        formData.append("resourceId", data.Images[0].resource_id);
+        formData.append("clusterId", data.cluster_id);
 
         try {
-            await fetch("/api/zip", {
+            console.log("run")
+            const result = await fetch("/api/upload", {
                 method: "POST",
                 body: formData,
             });
+            console.log(await result.json());
         } catch(error) {
             console.error("Upload error:", error);
             toast.current?.show({ 
@@ -75,7 +78,7 @@ export default function ResourceImageUpload() {
                 life: 5000
             });
         } finally {
-            await resource_status_validation(data.id);
+            await resource_status_validation("test");
         }
 
         // Calculate overall progress

@@ -1,24 +1,23 @@
-import prisma from "@/libs/prisma";
+import ClusterDetail from "@/components/clusters/cluster_detail"
 import ErrorPage from "@/components/error";
-import ClusterDetail from "@/components/clusters/cluster_detail";
+import prisma from "@/libs/prisma"
 
-export default async function ClusterPage({ params }: { params: Promise<{ clusterId: string }> }) {
+export default async function page({ params }: { params: Promise<{ clusterId: string }> }) {
     const { clusterId } = await params;
     const data = await prisma.clusters.findFirst({
         where: { id: clusterId },
-        include: { ClusterVersions: true }
+        include: {
+            ClusterVersions: true
+        }
     })
 
     if (!data) {
         return (
-            <ErrorPage message="Cluster does not exist"/>
+            <ErrorPage message="No cluster data" />
         )
     }
 
     return (
-        <div>
-            <ClusterDetail data={data}/>
-            {/* <VideoPlayer /> */}
-        </div>
+        <ClusterDetail data={data} />
     )
 }

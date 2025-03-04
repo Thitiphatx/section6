@@ -161,7 +161,7 @@ const getCluster = async (road: string, address: string): Promise<Clusters> => {
             data: {
                 name: road,
                 road: road,
-                address: address,
+                address: address
             },
         })
     }

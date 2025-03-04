@@ -8,7 +8,7 @@ import { getClusters } from "@/features/cluster/search";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ClusterDashboard({ data }: { data: Clusters[] }) {
+export default function ClusterList({ data }: { data: Clusters[] }) {
     const searchParams = useSearchParams();
     const router = useRouter();
 
